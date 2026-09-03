@@ -7,21 +7,25 @@
   <meta name="author" content="El Ghali Sany">
   <meta name="theme-color" content="#061b2f">
   <title>El Ghali Sany — Economics, Policy &amp; Decision Intelligence</title>
-  <link rel="canonical" href="https://el2545.github.io/portfolio/">
+  <link rel="canonical" href="https://el2545.github.io/portfolioV/">
+  <link rel="alternate" hreflang="en" href="https://el2545.github.io/portfolioV/?lang=en">
+  <link rel="alternate" hreflang="fr" href="https://el2545.github.io/portfolioV/?lang=fr">
+  <link rel="alternate" hreflang="ar" href="https://el2545.github.io/portfolioV/?lang=ar">
+  <link rel="alternate" hreflang="x-default" href="https://el2545.github.io/portfolioV/">
 
   <meta property="og:type" content="website">
   <meta property="og:title" content="El Ghali Sany — Economics, Policy &amp; Decision Intelligence">
   <meta property="og:description" content="Applied economics, policy analysis, financial modelling, and data analytics — built to turn evidence into better decisions.">
-  <meta property="og:url" content="https://el2545.github.io/portfolio/">
+  <meta property="og:url" content="https://el2545.github.io/portfolioV/">
   <meta property="og:locale" content="en_US">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="El Ghali Sany — Economics, Policy &amp; Decision Intelligence">
   <meta name="twitter:description" content="Applied economics, policy analysis, financial modelling, and data analytics — built to turn evidence into better decisions.">
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@6.6.0/dist/maplibre-gl.css" onerror="this.onerror=null;this.href='vendor/maplibre/maplibre-gl.css'">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@6.6.0/dist/maplibre-gl.css" onerror="this.onerror=null;this.href='maplibre-gl.css'">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@400;500;600;700&amp;family=Outfit:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@400;500;600;700&amp;family=Noto+Sans+Arabic:wght@300;400;500;600;700&amp;family=Outfit:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
   <style id="decision-intelligence-redesign">
     :root {
       --di-navy: #061b2f;
@@ -189,6 +193,103 @@
       cursor: pointer;
     }
 
+    .di-nav__tools,
+    .di-language-switcher {
+      display: flex;
+      align-items: center;
+    }
+
+    .di-nav__tools {
+      gap: 12px;
+    }
+
+    .di-language-switcher {
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+    }
+
+    .di-language-switcher button {
+      min-width: 34px;
+      min-height: 34px;
+      padding: 0 8px;
+      border: 0;
+      border-inline-end: 1px solid rgba(255, 255, 255, 0.16);
+      background: transparent;
+      color: rgba(255, 255, 255, 0.68);
+      font: 600 11px/1 var(--di-body);
+      letter-spacing: 0.04em;
+      cursor: pointer;
+    }
+
+    .di-language-switcher button:last-child {
+      border-inline-end: 0;
+    }
+
+    .di-language-switcher button:hover,
+    .di-language-switcher button[aria-pressed="true"] {
+      background: #d9734b;
+      color: var(--di-white);
+    }
+
+    html[dir="rtl"] body.di-ready {
+      font-family: "Noto Sans Arabic", Tahoma, Arial, sans-serif;
+      text-align: right;
+    }
+
+    html[dir="rtl"] .di-mark,
+    html[dir="rtl"] .di-hero h1,
+    html[dir="rtl"] .di-section-head h2,
+    html[dir="rtl"] .di-case-feature h3,
+    html[dir="rtl"] .di-case-card h3,
+    html[dir="rtl"] .di-role h3,
+    html[dir="rtl"] .di-degree h3,
+    html[dir="rtl"] .di-tool-column h3,
+    html[dir="rtl"] .di-languages h3,
+    html[dir="rtl"] .di-contact h2 {
+      font-family: "Noto Sans Arabic", Tahoma, Arial, sans-serif;
+      letter-spacing: 0;
+    }
+
+    html[dir="rtl"] .di-nav__links a,
+    html[dir="rtl"] .di-kicker,
+    html[dir="rtl"] .di-case-index,
+    html[dir="rtl"] .di-map-control-label,
+    html[dir="rtl"] .di-methods {
+      letter-spacing: 0;
+    }
+
+    html[dir="rtl"] .di-language-switcher button {
+      font-family: "Noto Sans Arabic", Tahoma, Arial, sans-serif;
+    }
+
+    html[dir="rtl"] .di-nav__links a::after {
+      transform-origin: right;
+    }
+
+    html[dir="rtl"] .di-affiliation::before {
+      transform: scaleX(-1);
+    }
+
+    html[dir="rtl"] .di-map-wrap {
+      direction: ltr;
+    }
+
+    html[dir="rtl"] .di-map-label,
+    html[dir="rtl"] .di-map-status,
+    html[dir="rtl"] .di-map-legend,
+    html[dir="rtl"] .di-map-inspector {
+      direction: rtl;
+      text-align: right;
+    }
+
+    html[dir="rtl"] .di-contact__links strong,
+    html[dir="rtl"] .di-role__date,
+    html[dir="rtl"] .di-degree__period,
+    html[dir="rtl"] .di-map-kpi strong,
+    html[dir="rtl"] .di-playback__time {
+      unicode-bidi: isolate;
+    }
+
     .di-hero {
       min-height: 100vh;
       padding: 132px 0 38px;
@@ -241,6 +342,16 @@
       font-weight: 500;
       letter-spacing: -0.045em;
       line-height: 0.91;
+    }
+
+    html[data-language="fr"] .di-hero h1 {
+      font-size: clamp(58px, 6.3vw, 92px);
+      line-height: 0.97;
+    }
+
+    html[dir="rtl"] .di-hero h1 {
+      font-size: clamp(54px, 6vw, 88px);
+      line-height: 1.14;
     }
 
     .di-hero__role {
@@ -786,6 +897,28 @@
 
     .di-map-view button[aria-pressed="true"] {
       background: var(--di-rust);
+      color: var(--di-white);
+    }
+
+    .di-map-view button:disabled {
+      cursor: not-allowed;
+      opacity: 0.38;
+    }
+
+    .di-map-wrap .leaflet-container {
+      width: 100%;
+      height: 100%;
+      background: #0a1b2d;
+      font-family: var(--di-body);
+    }
+
+    .di-map-wrap .leaflet-control-attribution {
+      background: rgba(6, 27, 47, 0.82);
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 9px;
+    }
+
+    .di-map-wrap .leaflet-control-attribution a {
       color: var(--di-white);
     }
 
@@ -1355,6 +1488,14 @@
     }
 
     @media (max-width: 980px) {
+      .di-nav__inner {
+        gap: 16px;
+      }
+
+      .di-nav__links {
+        gap: 14px;
+      }
+
       .di-hero__main,
       .di-section-head,
       .di-contact {
@@ -1433,6 +1574,11 @@
         justify-content: center;
       }
 
+      .di-language-switcher button {
+        min-width: 32px;
+        padding: 0 6px;
+      }
+
       .di-nav__links {
         position: absolute;
         top: 64px;
@@ -1463,6 +1609,16 @@
 
       .di-hero h1 {
         font-size: clamp(54px, 17vw, 76px);
+      }
+
+      html[data-language="fr"] .di-hero h1 {
+        font-size: clamp(42px, 13vw, 62px);
+        line-height: 1;
+      }
+
+      html[dir="rtl"] .di-hero h1 {
+        font-size: clamp(40px, 12vw, 58px);
+        line-height: 1.2;
       }
 
       .di-affiliation {
@@ -1625,6 +1781,21 @@
       }
     }
 
+    @media (max-width: 380px) {
+      .di-mark {
+        font-size: 21px;
+      }
+
+      .di-nav__tools {
+        gap: 8px;
+      }
+
+      .di-language-switcher button {
+        min-width: 28px;
+        padding: 0 4px;
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       body.di-ready {
         scroll-behavior: auto;
@@ -1670,7 +1841,6 @@
     <nav class="di-nav" aria-label="Primary navigation">
       <div class="di-nav__inner">
         <a class="di-mark" href="#profile" aria-label="El Ghali Sany, home">El Ghali <span>Sany</span></a>
-        <button class="di-menu-button" type="button" aria-expanded="false" aria-controls="portfolio-menu">Menu</button>
         <ul class="di-nav__links" id="portfolio-menu">
           <li><a href="#profile">Profile</a></li>
           <li><a href="#research">Research</a></li>
@@ -1679,6 +1849,14 @@
           <li><a href="CV_El_Ghali_Sany_EN.pdf" target="_blank" rel="noopener">CV</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
+        <div class="di-nav__tools">
+          <div class="di-language-switcher" role="group" aria-label="Language selection">
+            <button type="button" data-language="en" aria-label="View portfolio in English" aria-pressed="true">EN</button>
+            <button type="button" data-language="fr" aria-label="View portfolio in French" aria-pressed="false">FR</button>
+            <button type="button" data-language="ar" aria-label="View portfolio in Arabic" aria-pressed="false">ع</button>
+          </div>
+          <button class="di-menu-button" type="button" aria-expanded="false" aria-controls="portfolio-menu">Menu</button>
+        </div>
       </div>
     </nav>
 
@@ -2023,24 +2201,32 @@
       </div>
     </footer>
   
+  <script src="i18n.js"></script>
   <script type="module" id="decision-intelligence-app">
     (async () => {
-      let maplibregl;
-      try {
-        maplibregl = await import('https://cdn.jsdelivr.net/npm/maplibre-gl@6.6.0/dist/maplibre-gl.mjs');
-      } catch (onlineError) {
+      const i18n = window.PORTFOLIO_I18N;
+      const t = (source) => i18n?.t(source) || source;
+      const message = (key, ...values) => i18n?.message(key, ...values) || '';
+
+      const supportsWebGL2 = (() => {
         try {
-          maplibregl = await import('./vendor/maplibre/maplibre-gl.mjs');
-        } catch (localError) {
-          const unavailableMap = document.querySelector('#case-map');
-          const unavailableStatus = document.querySelector('#mapStatus');
-          if (unavailableMap) {
-            unavailableMap.classList.add('is-fallback');
-            unavailableMap.textContent = 'The map engine could not load. Confirm that index.html is published through GitHub Pages—not opened directly from the ZIP.';
+          const canvas = document.createElement('canvas');
+          return Boolean(canvas.getContext('webgl2', { failIfMajorPerformanceCaveat: true }));
+        } catch (error) {
+          return false;
+        }
+      })();
+
+      let maplibregl = null;
+      if (supportsWebGL2) {
+        try {
+          maplibregl = await import('https://cdn.jsdelivr.net/npm/maplibre-gl@6.6.0/dist/maplibre-gl.mjs');
+        } catch (onlineError) {
+          try {
+            maplibregl = await import('./maplibre-gl.mjs');
+          } catch (localError) {
+            console.info('3D map engine unavailable; loading the compatible 2D map.', { onlineError, localError });
           }
-          if (unavailableStatus) unavailableStatus.textContent = 'Map engine unavailable';
-          console.error('Map engine error:', { onlineError, localError });
-          return;
         }
       }
       const menuButton = document.querySelector('.di-menu-button');
@@ -2049,14 +2235,14 @@
       menuButton?.addEventListener('click', () => {
         const isOpen = menu.classList.toggle('is-open');
         menuButton.setAttribute('aria-expanded', String(isOpen));
-        menuButton.textContent = isOpen ? 'Close' : 'Menu';
+        menuButton.textContent = isOpen ? t('Close') : t('Menu');
       });
 
       document.querySelectorAll('.di-nav__links a[href^="#"]').forEach((link) => {
         link.addEventListener('click', () => {
           menu.classList.remove('is-open');
           menuButton?.setAttribute('aria-expanded', 'false');
-          if (menuButton) menuButton.textContent = 'Menu';
+          if (menuButton) menuButton.textContent = t('Menu');
         });
       });
 
@@ -2107,7 +2293,7 @@
       };
 
       const EMPTY_COLLECTION = { type: 'FeatureCollection', features: [] };
-      const numberFormatter = new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 1 });
+      let numberFormatter = i18n.numberFormatter();
       const cache = new Map();
       const controls = {
         modeButtons: [...document.querySelectorAll('[data-map-mode]')],
@@ -2139,6 +2325,7 @@
         zone: 'maarif',
         mode: 'heatmap',
         perspective: '3d',
+        engine: maplibregl ? 'maplibre' : 'leaflet',
         frames: [],
         step: 0,
         timer: null,
@@ -2147,6 +2334,12 @@
       };
 
       let map;
+      let leafletMap;
+      let leafletLayer;
+      let leafletRenderer;
+      let mapReady = false;
+
+      const zoneName = (zone = state.zone) => i18n.zoneLabel(zone);
 
       const setStatus = (message) => {
         if (controls.status) controls.status.textContent = message;
@@ -2169,6 +2362,47 @@
           }));
         }
         return cache.get(path);
+      };
+
+      const loadLeaflet = () => new Promise((resolve, reject) => {
+        if (window.L) {
+          resolve(window.L);
+          return;
+        }
+
+        if (!document.querySelector('link[data-leaflet-fallback]')) {
+          const stylesheet = document.createElement('link');
+          stylesheet.rel = 'stylesheet';
+          stylesheet.href = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css';
+          stylesheet.dataset.leafletFallback = 'true';
+          document.head.appendChild(stylesheet);
+        }
+
+        const existingScript = document.querySelector('script[data-leaflet-fallback]');
+        if (existingScript) {
+          existingScript.addEventListener('load', () => resolve(window.L), { once: true });
+          existingScript.addEventListener('error', () => reject(new Error('Compatible map engine could not load.')), { once: true });
+          return;
+        }
+
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js';
+        script.dataset.leafletFallback = 'true';
+        script.onload = () => resolve(window.L);
+        script.onerror = () => reject(new Error('Compatible map engine could not load.'));
+        document.head.appendChild(script);
+      });
+
+      const speedColour = (speed) => {
+        if (speed < 3) return '#b74922';
+        if (speed < 8) return '#d0a34b';
+        return '#57a7b8';
+      };
+
+      const densityColour = (intensity) => {
+        if (intensity < 0.2) return '#2e7d8f';
+        if (intensity < 0.34) return '#d0a34b';
+        return '#b74922';
       };
 
       const rasterStyle = {
@@ -2272,16 +2506,69 @@
         controls.inspector.hidden = false;
       };
 
+      const renderLeafletHeat = (points = []) => {
+        if (!leafletMap || !leafletLayer || !window.L) return;
+        leafletLayer.clearLayers();
+        const sampleEvery = Math.max(1, Math.ceil(points.length / 900));
+        points.forEach(([lat, lng, intensity], index) => {
+          if (index % sampleEvery) return;
+          const marker = window.L.circleMarker([lat, lng], {
+            renderer: leafletRenderer,
+            radius: 3 + Number(intensity) * 10,
+            stroke: false,
+            fillColor: densityColour(Number(intensity)),
+            fillOpacity: 0.48
+          });
+          marker.on('click', () => showInspector(
+            message('densityTitle'),
+            message('densityBody', Number(intensity).toFixed(2), zoneName())
+          ));
+          marker.addTo(leafletLayer);
+        });
+      };
+
+      const renderLeafletVehicles = (vehicles = []) => {
+        if (!leafletMap || !leafletLayer || !window.L) return;
+        leafletLayer.clearLayers();
+        vehicles.forEach((vehicle) => {
+          const marker = window.L.circleMarker([vehicle.lat, vehicle.lng], {
+            renderer: leafletRenderer,
+            radius: 5.5,
+            color: '#ffffff',
+            weight: 1,
+            fillColor: speedColour(Number(vehicle.speed) || 0),
+            fillOpacity: 0.96
+          });
+          marker.on('click', () => showInspector(
+            message('vehicleTitle', String(vehicle.id)),
+            message(
+              'vehicleBody',
+              Number(vehicle.speed).toFixed(2),
+              i18n.vehicleState(String(vehicle.state || 'unknown')),
+              formatTime(state.frames[state.step]?.time)
+            )
+          ));
+          marker.addTo(leafletLayer);
+        });
+      };
+
       const setLayerVisibility = (id, visible) => {
-        if (map?.getLayer(id)) map.setLayoutProperty(id, 'visibility', visible ? 'visible' : 'none');
+        if (state.engine === 'maplibre' && map?.getLayer(id)) {
+          map.setLayoutProperty(id, 'visibility', visible ? 'visible' : 'none');
+        }
       };
 
       const setPerspective = (perspective, animate = true) => {
+        if (state.engine === 'leaflet') perspective = '2d';
         state.perspective = perspective;
         controls.viewButtons.forEach((button) => {
           button.setAttribute('aria-pressed', String(button.dataset.mapView === perspective));
+          if (button.dataset.mapView === '3d') {
+            button.disabled = state.engine === 'leaflet';
+            button.title = state.engine === 'leaflet' ? message('webglRequired') : '';
+          }
         });
-        if (map) {
+        if (state.engine === 'maplibre' && map) {
           const camera = { pitch: perspective === '3d' ? 58 : 0, bearing: perspective === '3d' ? -18 : 0 };
           if (animate) map.easeTo({ ...camera, duration: prefersReducedMotion ? 0 : 850 });
           else map.jumpTo(camera);
@@ -2293,28 +2580,34 @@
       const stopPlayback = () => {
         if (state.timer) window.clearInterval(state.timer);
         state.timer = null;
-        controls.play.textContent = 'Play';
+        controls.play.textContent = t('Play');
         controls.play.setAttribute('aria-pressed', 'false');
-        controls.play.setAttribute('aria-label', 'Play simulation');
+        controls.play.setAttribute('aria-label', t('Play simulation'));
       };
 
       const renderStep = (requestedStep) => {
-        if (!state.frames.length || !map?.getSource('vehicles')) return;
+        if (!state.frames.length) return;
         state.step = (requestedStep + state.frames.length) % state.frames.length;
         const frame = state.frames[state.step];
-        map.getSource('vehicles').setData(toVehicleGeoJSON(frame.vehicles));
+        if (state.engine === 'maplibre') {
+          const vehicleSource = map?.getSource('vehicles');
+          if (!vehicleSource) return;
+          vehicleSource.setData(toVehicleGeoJSON(frame.vehicles));
+        } else {
+          renderLeafletVehicles(frame.vehicles);
+        }
         controls.timeline.value = String(state.step);
         controls.currentTime.textContent = formatTime(frame.time);
         controls.kpiPoints.textContent = numberFormatter.format(frame.vehicles.length);
-        controls.kpiPointsLabel.textContent = 'Vehicles this step';
+        controls.kpiPointsLabel.textContent = t('Vehicles this step');
       };
 
       const startPlayback = () => {
         if (state.mode !== 'simulation' || !state.frames.length) return;
         stopPlayback();
-        controls.play.textContent = 'Pause';
+        controls.play.textContent = t('Pause');
         controls.play.setAttribute('aria-pressed', 'true');
-        controls.play.setAttribute('aria-label', 'Pause simulation');
+        controls.play.setAttribute('aria-label', t('Pause simulation'));
         const playbackSpeed = Number(controls.speed.value) || 1;
         state.timer = window.setInterval(() => renderStep(state.step + 1), Math.max(90, 420 / playbackSpeed));
       };
@@ -2329,7 +2622,7 @@
       const updateKPIs = (data, pointCount) => {
         const kpis = data.kpis || {};
         controls.kpiPoints.textContent = numberFormatter.format(pointCount || 0);
-        controls.kpiPointsLabel.textContent = state.mode === 'heatmap' ? 'Heat samples' : 'Vehicles this step';
+        controls.kpiPointsLabel.textContent = t(state.mode === 'heatmap' ? 'Heat samples' : 'Vehicles this step');
         controls.kpiRecords.textContent = numberFormatter.format(kpis.vehicleRecords || 0);
         controls.kpiSpeed.textContent = Number.isFinite(Number(kpis.averageSpeed)) ? Number(kpis.averageSpeed).toFixed(2) + ' m/s' : '—';
         controls.kpiSteps.textContent = numberFormatter.format(kpis.steps || kpis.totalSteps || 0);
@@ -2344,7 +2637,15 @@
       };
 
       const focusBounds = (bounds) => {
-        if (!bounds || !map) return;
+        if (!bounds) return;
+        if (state.engine === 'leaflet' && leafletMap) {
+          leafletMap.fitBounds([
+            [bounds[0][1], bounds[0][0]],
+            [bounds[1][1], bounds[1][0]]
+          ], { padding: [35, 35], maxZoom: 15, animate: !prefersReducedMotion });
+          return;
+        }
+        if (!map) return;
         const camera = map.cameraForBounds(bounds, { padding: window.innerWidth < 760 ? 44 : 72, maxZoom: 15.25 });
         if (camera) map.easeTo({ ...camera, pitch: state.perspective === '3d' ? 58 : 0, bearing: state.perspective === '3d' ? -18 : 0, duration: prefersReducedMotion ? 0 : 1000 });
       };
@@ -2352,8 +2653,8 @@
       const updateControls = () => {
         controls.modeButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.mapMode === state.mode)));
         controls.zoneButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.mapZone === state.zone)));
-        controls.zoneLabel.textContent = ZONES[state.zone].label;
-        controls.modeLabel.textContent = state.mode === 'heatmap' ? 'congestion heatmap' : 'vehicle simulation';
+        controls.zoneLabel.textContent = zoneName();
+        controls.modeLabel.textContent = t(state.mode === 'heatmap' ? 'congestion heatmap' : 'vehicle simulation');
         controls.inspector.hidden = true;
       };
 
@@ -2363,55 +2664,67 @@
         const path = state.mode === 'heatmap' ? zone.heatmap : zone.simulation;
         stopPlayback();
         updateControls();
-        setStatus('Loading ' + zone.label + ' ' + (state.mode === 'heatmap' ? 'density samples…' : 'simulation frames…'));
+        setStatus(message(state.mode === 'heatmap' ? 'loadingHeat' : 'loadingSimulation', zoneName()));
         try {
           const data = await fetchJSON(path);
           if (request !== state.request) return;
 
           if (state.mode === 'heatmap') {
             const points = data.points || [];
-            map.getSource('heat-points').setData(toHeatGeoJSON(points));
-            map.getSource('density-columns').setData(toExtrusions(points));
-            map.getSource('vehicles').setData(EMPTY_COLLECTION);
-            setLayerVisibility('traffic-heat', true);
-            setLayerVisibility('heat-samples', true);
-            setLayerVisibility('vehicle-halo', false);
-            setLayerVisibility('vehicles', false);
-            setLayerVisibility('density-extrusions', state.perspective === '3d');
+            if (state.engine === 'maplibre') {
+              map.getSource('heat-points').setData(toHeatGeoJSON(points));
+              map.getSource('density-columns').setData(toExtrusions(points));
+              map.getSource('vehicles').setData(EMPTY_COLLECTION);
+              setLayerVisibility('traffic-heat', true);
+              setLayerVisibility('heat-samples', true);
+              setLayerVisibility('vehicle-halo', false);
+              setLayerVisibility('vehicles', false);
+              setLayerVisibility('density-extrusions', state.perspective === '3d');
+            } else {
+              renderLeafletHeat(points);
+            }
             state.frames = [];
             state.step = 0;
             controls.timeline.max = '0';
             controls.timeline.value = '0';
             controls.currentTime.textContent = '00:00';
             controls.totalTime.textContent = '00:00';
-            controls.legend.textContent = 'Lower density → higher density; columns add a 3D intensity view';
+            controls.legend.textContent = message('heatLegend');
             updateKPIs(data, points.length);
             setPlaybackEnabled(false);
             focusBounds(getBounds(points));
           } else {
             state.frames = data.timesteps || [];
-            state.step = 0;
-            map.getSource('heat-points').setData(EMPTY_COLLECTION);
-            map.getSource('density-columns').setData(EMPTY_COLLECTION);
-            setLayerVisibility('traffic-heat', false);
-            setLayerVisibility('heat-samples', false);
-            setLayerVisibility('density-extrusions', false);
-            setLayerVisibility('vehicle-halo', true);
-            setLayerVisibility('vehicles', true);
+            const visibleStart = state.frames.findIndex((frame) => (frame.vehicles || []).length >= 20);
+            state.step = visibleStart >= 0 ? visibleStart : 0;
+            if (state.engine === 'maplibre') {
+              map.getSource('heat-points').setData(EMPTY_COLLECTION);
+              map.getSource('density-columns').setData(EMPTY_COLLECTION);
+              setLayerVisibility('traffic-heat', false);
+              setLayerVisibility('heat-samples', false);
+              setLayerVisibility('density-extrusions', false);
+              setLayerVisibility('vehicle-halo', true);
+              setLayerVisibility('vehicles', true);
+            }
             controls.timeline.max = String(Math.max(0, state.frames.length - 1));
             controls.totalTime.textContent = formatTime(state.frames.at(-1)?.time || 0);
-            controls.legend.textContent = 'Red: slow · gold: moderate · blue: faster vehicle';
-            updateKPIs(data, state.frames[0]?.vehicles?.length || 0);
+            controls.legend.textContent = message('vehicleLegend');
+            updateKPIs(data, state.frames[state.step]?.vehicles?.length || 0);
             setPlaybackEnabled(true);
-            renderStep(0);
+            renderStep(state.step);
             focusBounds(getBounds(framePoints(data)));
           }
 
-          const baseMode = state.basemap === 'vector' ? '3D vector city context' : 'raster basemap fallback';
-          setStatus('Loaded ' + zone.label + ' · ' + baseMode + ' · drag, pinch, rotate, or inspect a point');
+          const baseMode = state.engine === 'leaflet'
+            ? message('compatibleBase')
+            : (state.basemap === 'vector' ? message('vectorBase') : message('rasterBase'));
+          const interactionHint = state.engine === 'leaflet'
+            ? message('leafletHint')
+            : message('maplibreHint');
+          setStatus(message('loaded', zoneName(), baseMode, interactionHint));
         } catch (error) {
           if (request !== state.request) return;
-          setStatus('The project layer could not be loaded. Run the portfolio from a web server and try again.');
+          setStatus(message('dataError'));
           setPlaybackEnabled(false);
           console.error('Map data error:', error);
         }
@@ -2538,13 +2851,16 @@
         map.on('click', 'vehicles', (event) => {
           const properties = event.features?.[0]?.properties;
           if (!properties) return;
-          showInspector('Vehicle ' + properties.id, Number(properties.speed).toFixed(2) + ' m/s · ' + properties.state + ' state · ' + formatTime(state.frames[state.step]?.time));
+          showInspector(
+            message('vehicleTitle', properties.id),
+            message('vehicleBody', Number(properties.speed).toFixed(2), i18n.vehicleState(properties.state), formatTime(state.frames[state.step]?.time))
+          );
         });
 
         const inspectDensity = (event) => {
           const properties = event.features?.[0]?.properties;
           if (!properties) return;
-          showInspector('Density sample', 'Relative intensity ' + Number(properties.intensity).toFixed(2) + ' · ' + ZONES[state.zone].label + ' · simulated project output');
+          showInspector(message('densityTitle'), message('densityBody', Number(properties.intensity).toFixed(2), zoneName()));
         };
         map.on('click', 'heat-samples', inspectDensity);
         map.on('click', 'density-extrusions', inspectDensity);
@@ -2569,8 +2885,58 @@
       controls.timeline.addEventListener('input', () => { stopPlayback(); renderStep(Number(controls.timeline.value)); });
       controls.speed.addEventListener('change', () => { if (state.timer) startPlayback(); });
       controls.inspectorClose.addEventListener('click', () => { controls.inspector.hidden = true; });
+      i18n.onChange(() => {
+        numberFormatter = i18n.numberFormatter();
+        if (menuButton) menuButton.textContent = t(menu.classList.contains('is-open') ? 'Close' : 'Menu');
+        setPerspective(state.perspective, false);
+        updateControls();
+        if (mapReady) loadActiveData();
+      });
+
+      const initialiseCompatibleMap = async (reason) => {
+        state.engine = 'leaflet';
+        state.basemap = 'raster';
+        state.perspective = '2d';
+        map = undefined;
+        mapContainer.replaceChildren();
+        mapContainer.classList.remove('is-fallback');
+
+        try {
+          const Leaflet = await loadLeaflet();
+          leafletRenderer = Leaflet.canvas({ padding: 0.5 });
+          leafletMap = Leaflet.map(mapContainer, {
+            center: [ZONES[state.zone].center[1], ZONES[state.zone].center[0]],
+            zoom: 13,
+            preferCanvas: true,
+            zoomControl: true,
+            scrollWheelZoom: true,
+            touchZoom: true,
+            attributionControl: true
+          });
+          Leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors'
+          }).addTo(leafletMap);
+          leafletLayer = Leaflet.layerGroup().addTo(leafletMap);
+          mapReady = true;
+          setPerspective('2d', false);
+          setStatus(message('fallbackActive'));
+          await loadActiveData();
+          if (reason) console.info('Using compatible 2D map:', reason.message || reason);
+        } catch (fallbackError) {
+          mapContainer.classList.add('is-fallback');
+          mapContainer.textContent = message('mapUnavailable');
+          setStatus(message('mapUnavailableStatus'));
+          setPlaybackEnabled(false);
+          console.error('Compatible map initialisation error:', fallbackError);
+        }
+      };
 
       const initialiseMap = async () => {
+        if (!maplibregl) {
+          await initialiseCompatibleMap('WebGL2 is unavailable in this browser');
+          return;
+        }
         try {
           const style = await resolveStyle();
           map = new maplibregl.Map({
@@ -2597,13 +2963,11 @@
             addProjectLayers();
             bindMapInteractions();
             setPerspective('3d', false);
+            mapReady = true;
             loadActiveData();
           });
         } catch (error) {
-          mapContainer.classList.add('is-fallback');
-          mapContainer.textContent = 'The interactive map could not start in this browser. The underlying SUMO/QGIS data and project files remain available in this portfolio.';
-          setStatus('Interactive map unavailable');
-          console.error('Map initialisation error:', error);
+          await initialiseCompatibleMap(error);
         }
       };
 
