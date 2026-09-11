@@ -4,6 +4,7 @@
   const SUPPORTED = ['en', 'fr', 'ar'];
   const COPY = {
     fr: {
+      'Retry map': 'Réessayer la carte',
       'Skip to main content': 'Aller au contenu principal',
       'Menu': 'Menu',
       'Close': 'Fermer',
@@ -170,6 +171,7 @@
       'View portfolio in Arabic': 'Afficher le portfolio en arabe'
     },
     ar: {
+      'Retry map': 'إعادة تحميل الخريطة',
       'Skip to main content': 'الانتقال إلى المحتوى الرئيسي',
       'Menu': 'القائمة',
       'Close': 'إغلاق',
@@ -404,7 +406,7 @@
       densityBody: (intensity, zone) => `Relative intensity ${intensity} · ${zone} · simulated project output`,
       vehicleTitle: (id) => `Vehicle ${id}`,
       vehicleBody: (speed, state, time) => `${speed} m/s · ${state} speed · ${time}`,
-      heatLegend: 'Lower density → higher density; columns add a 3D intensity view',
+      heatLegend: 'Blue: lower density · red: higher density',
       vehicleLegend: 'Red: slow · gold: moderate · blue: faster vehicle',
       loadingHeat: (zone) => `Loading ${zone} density samples…`,
       loadingSimulation: (zone) => `Loading ${zone} simulation frames…`,
@@ -414,7 +416,7 @@
       leafletHint: 'drag, pinch, zoom, or inspect a point',
       maplibreHint: 'drag, pinch, rotate, or inspect a point',
       loaded: (zone, base, hint) => `Loaded ${zone} · ${base} · ${hint}`,
-      dataError: 'The project layer could not be loaded. Run the portfolio from a web server and try again.',
+      dataError: 'The project data could not be loaded. Check your connection, then select Retry map.',
       fallbackActive: 'Compatible 2D map active · vehicle playback remains available',
       mapUnavailable: 'The map engines could not start. Confirm that JavaScript is enabled and open the portfolio through GitHub Pages.',
       mapUnavailableStatus: 'Interactive map unavailable',
@@ -425,7 +427,7 @@
       densityBody: (intensity, zone) => `Intensité relative ${intensity} · ${zone} · résultat simulé du projet`,
       vehicleTitle: (id) => `Véhicule ${id}`,
       vehicleBody: (speed, state, time) => `${speed} m/s · vitesse ${state} · ${time}`,
-      heatLegend: 'Densité faible → densité élevée ; les colonnes ajoutent une vue d’intensité en 3D',
+      heatLegend: 'Bleu : densité faible · rouge : densité élevée',
       vehicleLegend: 'Rouge : lent · or : modéré · bleu : plus rapide',
       loadingHeat: (zone) => `Chargement des échantillons de densité de ${zone}…`,
       loadingSimulation: (zone) => `Chargement des images de simulation de ${zone}…`,
@@ -435,7 +437,7 @@
       leafletHint: 'faites glisser, pincez, zoomez ou inspectez un point',
       maplibreHint: 'faites glisser, pincez, pivotez ou inspectez un point',
       loaded: (zone, base, hint) => `${zone} chargé · ${base} · ${hint}`,
-      dataError: 'La couche du projet n’a pas pu être chargée. Lancez le portfolio depuis un serveur web, puis réessayez.',
+      dataError: 'Les données du projet n’ont pas pu être chargées. Vérifiez votre connexion, puis sélectionnez Réessayer la carte.',
       fallbackActive: 'Carte 2D compatible active · la lecture des véhicules reste disponible',
       mapUnavailable: 'Les moteurs cartographiques n’ont pas pu démarrer. Vérifiez que JavaScript est activé et ouvrez le portfolio via GitHub Pages.',
       mapUnavailableStatus: 'Carte interactive indisponible',
@@ -446,7 +448,7 @@
       densityBody: (intensity, zone) => `الكثافة النسبية ${intensity} · ${zone} · مخرجات مشروع محاكاة`,
       vehicleTitle: (id) => `المركبة ${id}`,
       vehicleBody: (speed, state, time) => `${speed} م/ث · سرعة ${state} · ${time}`,
-      heatLegend: 'من كثافة منخفضة إلى كثافة مرتفعة؛ تضيف الأعمدة عرضاً ثلاثي الأبعاد للكثافة',
+      heatLegend: 'الأزرق: كثافة منخفضة · الأحمر: كثافة مرتفعة',
       vehicleLegend: 'أحمر: بطيئة · ذهبي: متوسطة · أزرق: أسرع',
       loadingHeat: (zone) => `جارٍ تحميل عينات الكثافة لمنطقة ${zone}…`,
       loadingSimulation: (zone) => `جارٍ تحميل إطارات المحاكاة لمنطقة ${zone}…`,
@@ -456,7 +458,7 @@
       leafletHint: 'اسحب أو قرّب أو كبّر أو افحص نقطة',
       maplibreHint: 'اسحب أو قرّب أو أدر الخريطة أو افحص نقطة',
       loaded: (zone, base, hint) => `تم تحميل ${zone} · ${base} · ${hint}`,
-      dataError: 'تعذر تحميل طبقة المشروع. شغّل ملف الأعمال من خادم ويب ثم أعد المحاولة.',
+      dataError: 'تعذر تحميل بيانات المشروع. تحقق من اتصالك، ثم اختر إعادة تحميل الخريطة.',
       fallbackActive: 'الخريطة الثنائية الأبعاد المتوافقة نشطة · تشغيل حركة المركبات متاح',
       mapUnavailable: 'تعذر تشغيل محركات الخرائط. تأكد من تفعيل JavaScript وافتح ملف الأعمال عبر GitHub Pages.',
       mapUnavailableStatus: 'الخريطة التفاعلية غير متاحة',
@@ -539,7 +541,8 @@
     textEntries.forEach(({ node: textNode, original, key }) => {
       if (!textNode.isConnected) return;
       const value = language === 'en' ? key : (COPY[language]?.[key] || key);
-      textNode.nodeValue = original.replace(key, value);
+      // Preserve surrounding whitespace, including when source copy spans lines.
+      textNode.nodeValue = language === 'en' ? original : original.replace(/\S[\s\S]*\S|\S/, value);
     });
 
     attributeEntries.forEach(({ element, attribute, original }) => {
@@ -547,7 +550,7 @@
       element.setAttribute(attribute, language === 'en' ? original : (COPY[language]?.[original] || original));
     });
 
-    document.querySelectorAll('[data-language]').forEach((button) => {
+    document.querySelectorAll('button[data-language]').forEach((button) => {
       button.setAttribute('aria-pressed', String(button.dataset.language === language));
     });
 
@@ -570,8 +573,13 @@
     listeners.forEach((listener) => listener(language));
   };
 
-  document.querySelectorAll('[data-language]').forEach((button) => {
+  document.querySelectorAll('button[data-language]').forEach((button) => {
     button.addEventListener('click', () => applyLanguage(button.dataset.language, { updateUrl: true }));
+  });
+
+  window.addEventListener('popstate', () => {
+    const requested = new URLSearchParams(window.location.search).get('lang');
+    applyLanguage(SUPPORTED.includes(requested) ? requested : 'en');
   });
 
   window.PORTFOLIO_I18N = {

@@ -58,7 +58,7 @@
       box-sizing: border-box;
     }
 
-    body.di-ready a {
+    :where(body.di-ready) a {
       color: inherit;
     }
 
@@ -103,6 +103,7 @@
     }
 
     .di-nav {
+      color: var(--di-white);
       position: fixed;
       inset: 0 0 auto;
       z-index: 1000;
@@ -209,8 +210,8 @@
     }
 
     .di-language-switcher button {
-      min-width: 34px;
-      min-height: 34px;
+      min-width: 44px;
+      min-height: 44px;
       padding: 0 8px;
       border: 0;
       border-inline-end: 1px solid rgba(255, 255, 255, 0.16);
@@ -227,8 +228,12 @@
 
     .di-language-switcher button:hover,
     .di-language-switcher button[aria-pressed="true"] {
-      background: #d9734b;
+      background: var(--di-rust);
       color: var(--di-white);
+    }
+
+    html[dir="rtl"] {
+      --di-body: "Noto Sans Arabic", Tahoma, Arial, sans-serif;
     }
 
     html[dir="rtl"] body.di-ready {
@@ -443,6 +448,7 @@
 
     .di-portrait img {
       width: 100%;
+      height: auto;
       aspect-ratio: 0.78;
       object-fit: cover;
       object-position: 50% 18%;
@@ -691,7 +697,7 @@
     .di-map-control-label {
       display: block;
       margin-bottom: 10px;
-      color: rgba(255, 255, 255, 0.46);
+      color: rgba(255, 255, 255, 0.76);
       font-size: 10px;
       font-weight: 600;
       letter-spacing: 0.11em;
@@ -717,7 +723,7 @@
       color: rgba(255, 255, 255, 0.68);
       font: 600 11px/1.25 var(--di-body);
       letter-spacing: 0.055em;
-      text-align: left;
+      text-align: start;
       text-transform: uppercase;
       cursor: pointer;
     }
@@ -764,8 +770,8 @@
     .di-map-kpi span {
       display: block;
       margin-top: 7px;
-      color: rgba(255, 255, 255, 0.46);
-      font-size: 9px;
+      color: rgba(255, 255, 255, 0.76);
+      font-size: 11px;
       letter-spacing: 0.075em;
       line-height: 1.35;
       text-transform: uppercase;
@@ -907,7 +913,7 @@
 
     .di-map-wrap .leaflet-container {
       width: 100%;
-      height: 100%;
+      height: auto;
       background: #0a1b2d;
       font-family: var(--di-body);
     }
@@ -1471,13 +1477,13 @@
       text-transform: uppercase;
     }
 
-    .di-reveal {
+    .di-motion .di-reveal {
       opacity: 0;
       transform: translateY(18px);
       transition: opacity 520ms ease, transform 520ms ease;
     }
 
-    .di-reveal.is-visible {
+    .di-motion .di-reveal.is-visible {
       opacity: 1;
       transform: none;
     }
@@ -1575,7 +1581,7 @@
       }
 
       .di-language-switcher button {
-        min-width: 32px;
+        min-width: 44px;
         padding: 0 6px;
       }
 
@@ -1791,7 +1797,7 @@
       }
 
       .di-language-switcher button {
-        min-width: 28px;
+        min-width: 44px;
         padding: 0 4px;
       }
     }
@@ -1801,7 +1807,7 @@
         scroll-behavior: auto;
       }
 
-      .di-reveal {
+      .di-motion .di-reveal {
         opacity: 1;
         transform: none;
         transition: none;
@@ -1832,6 +1838,53 @@
       }
     }
   
+    /* Readable, touch-friendly refinements of the existing visual system. */
+    html { scroll-padding-top: 96px; }
+    .di-mark { white-space: nowrap; }
+    .di-hero h1, .di-section-head h2 { text-wrap: balance; }
+    .di-contact__links strong { overflow-wrap: anywhere; }
+    a[href^="mailto:"] strong { direction: ltr; unicode-bidi: isolate; }
+    .di-map-view button, .di-map-inspector button { min-height: 44px; min-width: 44px; }
+    .di-map-wrap .maplibregl-ctrl-group button { width: 44px; height: 44px; }
+    .di-map-wrap .leaflet-control-zoom a { width: 44px; height: 44px; line-height: 44px; }
+    .di-map-wrap .leaflet-top.leaflet-left { left: auto; right: 0; }
+    .di-map-wrap .leaflet-top .leaflet-control { margin-left: 0; margin-right: 10px; }
+    .di-map-wrap .leaflet-control-attribution { font-size: 11px; }
+    .di-map-wrap .leaflet-container a { color: #ffffff; }
+    .di-map-wrap .leaflet-control-zoom a { color: var(--di-ink); }
+    .di-map-status { color: #fff; }
+    .di-map-kpis[aria-busy="true"] strong { opacity: 0.35; }
+    .di-map-wrap.is-loading #case-map { opacity: 0.45; }
+    .di-map-retry { margin-top: 14px; color: white; }
+    .di-map-retry[hidden] { display: none; }
+    .di-playback__timeline { direction: ltr; }
+    .di-playback__time { font-variant-numeric: tabular-nums; }
+    .di-map-legend[data-mode="simulation"] .di-map-legend__scale { grid-template-columns: repeat(3, 1fr); }
+    .di-map-legend[data-mode="simulation"] .di-map-legend__scale span:nth-child(1) { background: #b74922; }
+    .di-map-legend[data-mode="simulation"] .di-map-legend__scale span:nth-child(2) { background: #d0a34b; }
+    .di-map-legend[data-mode="simulation"] .di-map-legend__scale span:nth-child(3) { background: #57a7b8; }
+    .di-map-legend[data-mode="simulation"] .di-map-legend__scale span:nth-child(4) { display: none; }
+    html[dir="rtl"] .di-map-option { letter-spacing: 0; text-align: right; }
+    html[dir="rtl"] .di-playback__buttons { direction: ltr; }
+    @media (min-width: 761px) and (max-width: 1100px) {
+      .di-menu-button { display: inline-flex; align-items: center; justify-content: center; padding: 12px; }
+      .di-nav__links { display: none; position: absolute; inset: 72px 0 auto; padding: 16px 24px; background: var(--di-navy); border-bottom: 1px solid var(--di-line-dark); }
+      .di-nav__links.is-open { display: grid; grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 380px) {
+      .di-nav__inner { width: calc(100% - 24px); gap: 8px; }
+      .di-mark { font-size: 16px; }
+      .di-nav__tools { gap: 4px; }
+      .di-menu-button { letter-spacing: 0; padding: 0 4px; }
+    }
+    @media (max-width: 760px) {
+      .di-map-view { right: 60px; }
+      .di-map-label { max-width: calc(100% - 180px); }
+    }
+    @media print {
+      .di-motion .di-reveal { opacity: 1; transform: none; }
+      .di-map-panel, .di-map-wrap { display: none; }
+    }
   </style>
 </head>
 <body class="di-ready">
@@ -1950,6 +2003,7 @@
 
               <p class="di-data-note">Georeferenced SUMO/QGIS project output, reduced for the web. This is simulated evidence—not a live traffic feed. Tap a vehicle or density point to inspect it.</p>
               <a class="di-text-link" href="AI-MCDM%20Investment%20Scoring%20for%20Smart%20Cities.pdf" target="_blank" rel="noopener">Read project paper</a>
+              <button class="di-map-option di-map-retry" id="mapRetry" type="button" hidden>Retry map</button>
             </div>
             <div class="di-map-wrap">
               <div id="case-map" role="region" aria-label="Interactive 3D SUMO traffic map of Casablanca"></div>
@@ -2217,20 +2271,27 @@
         }
       })();
 
+      // Navigation must never wait for a map engine or network request.
       let maplibregl = null;
-      if (supportsWebGL2) {
-        try {
-          maplibregl = await import('https://cdn.jsdelivr.net/npm/maplibre-gl@6.6.0/dist/maplibre-gl.mjs');
-        } catch (onlineError) {
-          try {
-            maplibregl = await import('./maplibre-gl.mjs');
-          } catch (localError) {
-            console.info('3D map engine unavailable; loading the compatible 2D map.', { onlineError, localError });
-          }
-        }
-      }
       const menuButton = document.querySelector('.di-menu-button');
       const menu = document.querySelector('.di-nav__links');
+      const closeMenu = () => {
+        menu?.classList.remove('is-open');
+        menuButton?.setAttribute('aria-expanded', 'false');
+        if (menuButton) menuButton.textContent = t('Menu');
+      };
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && menu?.classList.contains('is-open')) {
+          closeMenu();
+          menuButton?.focus();
+        }
+      });
+      document.addEventListener('click', (event) => {
+        if (!event.target.closest('.di-nav')) closeMenu();
+      });
+      i18n.onChange(() => {
+        if (menuButton) menuButton.textContent = t(menu.classList.contains('is-open') ? 'Close' : 'Menu');
+      });
 
       menuButton?.addEventListener('click', () => {
         const isOpen = menu.classList.toggle('is-open');
@@ -2238,7 +2299,7 @@
         menuButton.textContent = isOpen ? t('Close') : t('Menu');
       });
 
-      document.querySelectorAll('.di-nav__links a[href^="#"]').forEach((link) => {
+      document.querySelectorAll('.di-nav__links a, .di-mark').forEach((link) => {
         link.addEventListener('click', () => {
           menu.classList.remove('is-open');
           menuButton?.setAttribute('aria-expanded', 'false');
@@ -2267,6 +2328,7 @@
       if (prefersReducedMotion || !('IntersectionObserver' in window)) {
         document.querySelectorAll('.di-reveal').forEach((item) => item.classList.add('is-visible'));
       } else {
+        document.documentElement.classList.add('di-motion');
         const revealObserver = new IntersectionObserver((entries, observer) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
@@ -2330,7 +2392,10 @@
         step: 0,
         timer: null,
         request: 0,
-        basemap: 'vector'
+        basemap: 'vector',
+        data: null,
+        loading: false,
+        error: false
       };
 
       let map;
@@ -2338,6 +2403,13 @@
       let leafletLayer;
       let leafletRenderer;
       let mapReady = false;
+      const retryButton = document.querySelector('#mapRetry');
+      const setBusy = (busy) => {
+        state.loading = busy;
+        mapContainer.parentElement.classList.toggle('is-loading', busy);
+        mapContainer.setAttribute('aria-busy', String(busy));
+        document.querySelector('.di-map-kpis').setAttribute('aria-busy', String(busy));
+      };
 
       const zoneName = (zone = state.zone) => i18n.zoneLabel(zone);
 
@@ -2353,13 +2425,17 @@
 
       const fetchJSON = async (path) => {
         if (!cache.has(path)) {
-          cache.set(path, fetch(path).then((response) => {
+          const controller = new AbortController();
+          const timeout = window.setTimeout(() => controller.abort(), 45000);
+          cache.set(path, fetch(path, { signal: controller.signal }).then((response) => {
             if (!response.ok) throw new Error('Data file could not be loaded.');
             return response.json();
           }).catch((error) => {
             cache.delete(path);
             throw error;
-          }));
+          }).finally(() => window.clearTimeout(timeout)));
+          // Retain at most two datasets: five full simulations are costly on phones.
+          while (cache.size > 2) cache.delete(cache.keys().next().value);
         }
         return cache.get(path);
       };
@@ -2598,12 +2674,13 @@
         }
         controls.timeline.value = String(state.step);
         controls.currentTime.textContent = formatTime(frame.time);
+        controls.timeline.setAttribute('aria-valuetext', formatTime(frame.time) + ' / ' + formatTime(state.frames.at(-1)?.time));
         controls.kpiPoints.textContent = numberFormatter.format(frame.vehicles.length);
         controls.kpiPointsLabel.textContent = t('Vehicles this step');
       };
 
       const startPlayback = () => {
-        if (state.mode !== 'simulation' || !state.frames.length) return;
+        if (state.loading || state.mode !== 'simulation' || !state.frames.length) return;
         stopPlayback();
         controls.play.textContent = t('Pause');
         controls.play.setAttribute('aria-pressed', 'true');
@@ -2628,12 +2705,19 @@
         controls.kpiSteps.textContent = numberFormatter.format(kpis.steps || kpis.totalSteps || 0);
       };
 
-      const framePoints = (data) => {
-        const points = [];
+      const simulationBounds = (data) => {
+        let bounds = null;
         (data.timesteps || []).forEach((frame) => {
-          (frame.vehicles || []).forEach((vehicle) => points.push([vehicle.lat, vehicle.lng]));
+          (frame.vehicles || []).forEach(({ lat, lng }) => {
+            if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+            if (!bounds) bounds = [[lng, lat], [lng, lat]];
+            bounds[0][0] = Math.min(bounds[0][0], lng);
+            bounds[0][1] = Math.min(bounds[0][1], lat);
+            bounds[1][0] = Math.max(bounds[1][0], lng);
+            bounds[1][1] = Math.max(bounds[1][1], lat);
+          });
         });
-        return points;
+        return bounds;
       };
 
       const focusBounds = (bounds) => {
@@ -2651,6 +2735,7 @@
       };
 
       const updateControls = () => {
+        document.querySelector('.di-map-legend').dataset.mode = state.mode;
         controls.modeButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.mapMode === state.mode)));
         controls.zoneButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.mapZone === state.zone)));
         controls.zoneLabel.textContent = zoneName();
@@ -2659,15 +2744,22 @@
       };
 
       const loadActiveData = async () => {
+        updateControls();
+        if (!mapReady) return;
         const request = ++state.request;
         const zone = ZONES[state.zone];
         const path = state.mode === 'heatmap' ? zone.heatmap : zone.simulation;
-        stopPlayback();
-        updateControls();
+        setPlaybackEnabled(false);
+        state.data = null;
+        state.frames = [];
+        state.error = false;
+        retryButton.hidden = true;
+        setBusy(true);
         setStatus(message(state.mode === 'heatmap' ? 'loadingHeat' : 'loadingSimulation', zoneName()));
         try {
           const data = await fetchJSON(path);
           if (request !== state.request) return;
+          state.data = data;
 
           if (state.mode === 'heatmap') {
             const points = data.points || [];
@@ -2710,9 +2802,9 @@
             controls.totalTime.textContent = formatTime(state.frames.at(-1)?.time || 0);
             controls.legend.textContent = message('vehicleLegend');
             updateKPIs(data, state.frames[state.step]?.vehicles?.length || 0);
-            setPlaybackEnabled(true);
+            setPlaybackEnabled(state.frames.length > 0);
             renderStep(state.step);
-            focusBounds(getBounds(framePoints(data)));
+            focusBounds(simulationBounds(data));
           }
 
           const baseMode = state.engine === 'leaflet'
@@ -2724,9 +2816,15 @@
           setStatus(message('loaded', zoneName(), baseMode, interactionHint));
         } catch (error) {
           if (request !== state.request) return;
+          state.data = null;
+          state.frames = [];
+          state.error = true;
+          retryButton.hidden = false;
           setStatus(message('dataError'));
           setPlaybackEnabled(false);
           console.error('Map data error:', error);
+        } finally {
+          if (request === state.request) setBusy(false);
         }
       };
 
@@ -2885,31 +2983,66 @@
       controls.timeline.addEventListener('input', () => { stopPlayback(); renderStep(Number(controls.timeline.value)); });
       controls.speed.addEventListener('change', () => { if (state.timer) startPlayback(); });
       controls.inspectorClose.addEventListener('click', () => { controls.inspector.hidden = true; });
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) stopPlayback();
+      });
+      retryButton.addEventListener('click', () => {
+        retryButton.hidden = true;
+        if (mapReady) loadActiveData();
+        else initialiseMap();
+      });
       i18n.onChange(() => {
         numberFormatter = i18n.numberFormatter();
         if (menuButton) menuButton.textContent = t(menu.classList.contains('is-open') ? 'Close' : 'Menu');
-        setPerspective(state.perspective, false);
         updateControls();
-        if (mapReady) loadActiveData();
+        controls.legend.textContent = message(state.mode === 'heatmap' ? 'heatLegend' : 'vehicleLegend');
+        controls.play.textContent = t(state.timer ? 'Pause' : 'Play');
+        controls.play.setAttribute('aria-label', t(state.timer ? 'Pause simulation' : 'Play simulation'));
+        if (state.data) {
+          updateKPIs(state.data, state.mode === 'heatmap' ? state.data.points?.length : state.frames[state.step]?.vehicles?.length);
+        }
+        if (state.loading) {
+          setStatus(message(state.mode === 'heatmap' ? 'loadingHeat' : 'loadingSimulation', zoneName()));
+        } else if (state.error) {
+          setStatus(message('dataError'));
+        } else if (mapReady) {
+          setStatus(message('loaded', zoneName(), message(state.engine === 'leaflet' ? 'compatibleBase' : state.basemap === 'vector' ? 'vectorBase' : 'rasterBase'), message(state.engine === 'leaflet' ? 'leafletHint' : 'maplibreHint')));
+        } else if (mapContainer.classList.contains('is-fallback')) {
+          mapContainer.textContent = message('mapUnavailable');
+          setStatus(message('mapUnavailableStatus'));
+        }
+        // Reflow after RTL changes without moving the camera or restarting playback.
+        window.requestAnimationFrame(() => { map?.resize(); leafletMap?.invalidateSize({ pan: false }); });
       });
 
       const initialiseCompatibleMap = async (reason) => {
+        mapReady = false;
         state.engine = 'leaflet';
         state.basemap = 'raster';
         state.perspective = '2d';
+        map?.remove();
         map = undefined;
+        leafletMap?.remove();
+        leafletMap = undefined;
         mapContainer.replaceChildren();
         mapContainer.classList.remove('is-fallback');
 
         try {
-          const Leaflet = await loadLeaflet();
+          let fallbackTimeout;
+          let Leaflet;
+          try {
+            Leaflet = await Promise.race([
+              loadLeaflet(),
+              new Promise((_, reject) => { fallbackTimeout = window.setTimeout(() => reject(new Error('Compatible map timeout')), 15000); })
+            ]);
+          } finally { window.clearTimeout(fallbackTimeout); }
           leafletRenderer = Leaflet.canvas({ padding: 0.5 });
           leafletMap = Leaflet.map(mapContainer, {
             center: [ZONES[state.zone].center[1], ZONES[state.zone].center[0]],
             zoom: 13,
             preferCanvas: true,
             zoomControl: true,
-            scrollWheelZoom: true,
+            scrollWheelZoom: false,
             touchZoom: true,
             attributionControl: true
           });
@@ -2924,15 +3057,30 @@
           await loadActiveData();
           if (reason) console.info('Using compatible 2D map:', reason.message || reason);
         } catch (fallbackError) {
+          mapReady = false;
+          document.querySelector('script[data-leaflet-fallback]')?.remove();
           mapContainer.classList.add('is-fallback');
           mapContainer.textContent = message('mapUnavailable');
           setStatus(message('mapUnavailableStatus'));
           setPlaybackEnabled(false);
+          retryButton.hidden = false;
           console.error('Compatible map initialisation error:', fallbackError);
         }
       };
 
       const initialiseMap = async () => {
+        if (supportsWebGL2 && !maplibregl) {
+          try {
+            let engineTimeout;
+            try {
+              maplibregl = await Promise.race([
+                import('./maplibre-gl.mjs'),
+                new Promise((_, reject) => { engineTimeout = window.setTimeout(() => reject(new Error('Map engine timeout')), 12000); })
+              ]);
+            } finally { window.clearTimeout(engineTimeout); }
+          } catch (error) { console.info('Using the compatible map engine.', error); }
+        }
+        state.engine = maplibregl ? 'maplibre' : 'leaflet';
         if (!maplibregl) {
           await initialiseCompatibleMap('WebGL2 is unavailable in this browser');
           return;
@@ -2947,7 +3095,7 @@
             pitch: 58,
             bearing: -18,
             antialias: true,
-            cooperativeGestures: false,
+            cooperativeGestures: true,
             attributionControl: true
           });
           map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), 'top-right');
@@ -2957,14 +3105,21 @@
           map.touchZoomRotate.enableRotation();
           map.touchPitch?.enable();
 
-          map.once('load', () => {
-            themeBaseMap();
-            addCityBuildings();
-            addProjectLayers();
-            bindMapInteractions();
-            setPerspective('3d', false);
-            mapReady = true;
-            loadActiveData();
+          await new Promise((resolve, reject) => {
+            const startupTimeout = window.setTimeout(() => reject(new Error('3D map startup timeout')), 20000);
+            map.once('load', () => {
+              window.clearTimeout(startupTimeout);
+              try {
+                themeBaseMap();
+                addCityBuildings();
+                addProjectLayers();
+                bindMapInteractions();
+                setPerspective(state.perspective, false);
+                mapReady = true;
+                loadActiveData();
+                resolve();
+              } catch (error) { reject(error); }
+            });
           });
         } catch (error) {
           await initialiseCompatibleMap(error);

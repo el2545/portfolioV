@@ -1,0 +1,6 @@
+{
+  "name": "el-ghali-sany-portfolio",
+  "private": true,
+  "scripts": { "test": "node --test tests/portfolio.test.cjs" },
+  "devDependencies": { "linkedom": "0.18.12" }
+}
