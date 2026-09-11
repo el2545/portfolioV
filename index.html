@@ -1885,6 +1885,33 @@
       .di-motion .di-reveal { opacity: 1; transform: none; }
       .di-map-panel, .di-map-wrap { display: none; }
     }
+    .di-map-wrap { scroll-margin-top: 92px; }
+    .di-map-method { font-size: 13px; margin: 12px 0 24px; color: #dce4ec; }
+    .di-map-method summary { cursor: pointer; font-weight: 600; padding: 12px 0; }
+    .di-map-method p { margin: 10px 0; }
+    .di-map-method a { text-underline-offset: 4px; }
+    .di-playback { top: 0; bottom: auto; }
+    #case-map { top: 92px; bottom: 0; }
+    .di-map-label, .di-map-view { top: 110px; }
+    .di-map-status { top: 162px; }
+    .di-map-legend { bottom: 32px; }
+    .di-map-inspector { bottom: 140px; }
+    @media (min-width: 981px) {
+      .di-case-feature--explorer .di-map-wrap {
+        position: sticky;
+        top: 92px;
+        align-self: start;
+        height: min(760px, calc(100svh - 110px));
+        min-height: 600px;
+      }
+    }
+    @media (max-width: 760px) {
+      #case-map { top: 144px; bottom: 0; }
+      .di-map-label, .di-map-view { top: 156px; }
+      .di-map-status { top: 212px; }
+      .di-map-legend { bottom: 32px; }
+      .di-map-inspector { bottom: 150px; }
+    }
   </style>
 </head>
 <body class="di-ready">
@@ -1970,7 +1997,7 @@
             <div class="di-case-feature__content">
               <span class="di-case-index">01 / Interactive analysis</span>
               <h3>Casablanca Mobility Explorer</h3>
-              <p class="di-question"><strong>Decision question:</strong> Where does simulated congestion concentrate, and how does vehicle flow change across five urban zones?</p>
+              <p class="di-question"><strong>Decision question:</strong> How can simulated traffic inform OOH/DOOH location analysis, alongside audience, costs and regulation?</p>
               <ul class="di-methods" aria-label="Methods used">
                 <li>SUMO simulation</li>
                 <li>QGIS</li>
@@ -1980,8 +2007,8 @@
               <div class="di-map-panel" aria-label="Map controls">
                 <span class="di-map-control-label">Analysis layer</span>
                 <div class="di-map-segmented">
-                  <button class="di-map-option" type="button" data-map-mode="heatmap" aria-pressed="true">Congestion heatmap</button>
-                  <button class="di-map-option" type="button" data-map-mode="simulation" aria-pressed="false">Vehicle simulation</button>
+                  <button class="di-map-option" type="button" data-map-mode="heatmap" aria-pressed="true">Weighted SUMO samples</button>
+                  <button class="di-map-option" type="button" data-map-mode="simulation" aria-pressed="false">Play SUMO vehicles</button>
                 </div>
 
                 <span class="di-map-control-label">Casablanca zone</span>
@@ -1996,13 +2023,21 @@
 
               <div class="di-map-kpis" aria-label="Current zone indicators">
                 <div class="di-map-kpi"><strong id="mapKpiPoints">—</strong><span id="mapKpiPointsLabel">Heat samples</span></div>
-                <div class="di-map-kpi"><strong id="mapKpiRecords">—</strong><span>Displayed records</span></div>
-                <div class="di-map-kpi"><strong id="mapKpiSpeed">—</strong><span>Average speed</span></div>
-                <div class="di-map-kpi"><strong id="mapKpiSteps">—</strong><span>Simulation steps</span></div>
+                <div class="di-map-kpi"><strong id="mapKpiRecords">—</strong><span>Exported position records</span></div>
+                <div class="di-map-kpi"><strong id="mapKpiSpeed">—</strong><span>Frame mean speed</span></div>
+                <div class="di-map-kpi"><strong id="mapKpiSteps">—</strong><span>Exported frames</span></div>
               </div>
 
-              <p class="di-data-note">Georeferenced SUMO/QGIS project output, reduced for the web. This is simulated evidence—not a live traffic feed. Tap a vehicle or density point to inspect it.</p>
-              <a class="di-text-link" href="AI-MCDM%20Investment%20Scoring%20for%20Smart%20Cities.pdf" target="_blank" rel="noopener">Read project paper</a>
+              <p class="di-data-note">Archived SUMO output from the OOH/DOOH study. Vehicle positions are sampled every 8 seconds, with up to 450 vehicles per exported frame. Repeated positions are not unique viewers or measured advertising impressions.</p>
+              <details class="di-map-method">
+                <summary>What these maps measure</summary>
+                <p>The heat layer uses all 12,000 supplied coordinate/weight samples for the selected zone. The export does not document the weight formula. Colour indicates smoothed weighted sample concentration, not a calibrated congestion rate or an investment score.</p>
+                <p>Vehicle playback uses the supplied IDs, coordinates, timestamps and speeds without invented routes. Stationary vehicles remain stationary. The mean speed is recalculated for the displayed frame; it is not the original full-run average.</p>
+                <p>Traffic is one input to the thesis, alongside audience, CAPEX/OPEX and regulation. The archive does not contain detector coordinates, billboard visibility geometry or the original SUMO network and route files, so this map cannot calculate advertising exposure or reproduce the complete simulation.</p>
+                <a id="mapSourceHeat" href="maarif_heatmap.json" download>Download heat samples</a><br>
+                <a id="mapSourceSimulation" href="maarif_simulation_geo.json" download>Download vehicle records</a>
+              </details>
+              <a class="di-text-link" href="pfe%20Elghali%20sany%20.pdf#page=36" target="_blank" rel="noopener">Read the OOH/DOOH thesis</a>
               <button class="di-map-option di-map-retry" id="mapRetry" type="button" hidden>Retry map</button>
             </div>
             <div class="di-map-wrap">
@@ -2039,9 +2074,9 @@
                 </label>
                 <label class="di-playback__speed">Speed
                   <select id="mapPlaybackSpeed" aria-label="Playback speed">
-                    <option value="0.5">0.5×</option>
-                    <option value="1" selected>1×</option>
-                    <option value="2">2×</option>
+                    <option value="1">1×</option>
+                    <option value="10">10×</option>
+                    <option value="20" selected>20×</option>
                   </select>
                 </label>
               </div>
@@ -2255,12 +2290,14 @@
       </div>
     </footer>
   
+  <script src="mobility-data.js"></script>
   <script src="i18n.js"></script>
   <script type="module" id="decision-intelligence-app">
     (async () => {
       const i18n = window.PORTFOLIO_I18N;
       const t = (source) => i18n?.t(source) || source;
       const message = (key, ...values) => i18n?.message(key, ...values) || '';
+      const mobility = window.PORTFOLIO_DATA;
 
       const supportsWebGL2 = (() => {
         try {
@@ -2395,14 +2432,23 @@
         basemap: 'vector',
         data: null,
         loading: false,
-        error: false
+        error: false,
+        playWhenReady: false,
+        exportStats: null
       };
 
       let map;
       let leafletMap;
       let leafletLayer;
       let leafletRenderer;
+      let leafletHeat;
+      const vehicleMarkers = new Map();
       let mapReady = false;
+      if ('ResizeObserver' in window) {
+        new window.ResizeObserver(() => {
+          window.requestAnimationFrame(() => { map?.resize(); leafletMap?.invalidateSize({ pan: false }); });
+        }).observe(mapContainer);
+      }
       const retryButton = document.querySelector('#mapRetry');
       const setBusy = (busy) => {
         state.loading = busy;
@@ -2427,10 +2473,7 @@
         if (!cache.has(path)) {
           const controller = new AbortController();
           const timeout = window.setTimeout(() => controller.abort(), 45000);
-          cache.set(path, fetch(path, { signal: controller.signal }).then((response) => {
-            if (!response.ok) throw new Error('Data file could not be loaded.');
-            return response.json();
-          }).catch((error) => {
+          cache.set(path, mobility.readJSON(path, controller.signal).catch((error) => {
             cache.delete(path);
             throw error;
           }).finally(() => window.clearTimeout(timeout)));
@@ -2440,34 +2483,28 @@
         return cache.get(path);
       };
 
-      const loadLeaflet = () => new Promise((resolve, reject) => {
-        if (window.L) {
-          resolve(window.L);
-          return;
-        }
-
+      const loadLeaflet = async () => {
         if (!document.querySelector('link[data-leaflet-fallback]')) {
           const stylesheet = document.createElement('link');
           stylesheet.rel = 'stylesheet';
-          stylesheet.href = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css';
+          stylesheet.href = 'vendor/leaflet/leaflet.css';
           stylesheet.dataset.leafletFallback = 'true';
           document.head.appendChild(stylesheet);
         }
-
-        const existingScript = document.querySelector('script[data-leaflet-fallback]');
-        if (existingScript) {
-          existingScript.addEventListener('load', () => resolve(window.L), { once: true });
-          existingScript.addEventListener('error', () => reject(new Error('Compatible map engine could not load.')), { once: true });
-          return;
-        }
-
-        const script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js';
-        script.dataset.leafletFallback = 'true';
-        script.onload = () => resolve(window.L);
-        script.onerror = () => reject(new Error('Compatible map engine could not load.'));
-        document.head.appendChild(script);
-      });
+        const loadScript = (src, name) => new Promise((resolve, reject) => {
+          document.querySelector('script[data-' + name + ']')?.remove();
+          const script = document.createElement('script');
+          script.src = src;
+          script.setAttribute('data-' + name, 'true');
+          script.onload = resolve;
+          script.onerror = () => { script.remove(); reject(new Error('Local map dependency failed: ' + src)); };
+          document.head.appendChild(script);
+        });
+        if (!window.L) await loadScript('vendor/leaflet/leaflet.js', 'leaflet-fallback');
+        if (!window.L?.heatLayer) await loadScript('vendor/leaflet/leaflet-heat.js', 'leaflet-heat');
+        if (!window.L?.heatLayer) throw new Error('Local heatmap engine unavailable');
+        return window.L;
+      };
 
       const speedColour = (speed) => {
         if (speed < 3) return '#b74922';
@@ -2523,31 +2560,6 @@
         }))
       });
 
-      const toExtrusions = (points = []) => {
-        const sampled = points.filter((_, index) => index % 42 === 0);
-        return {
-          type: 'FeatureCollection',
-          features: sampled.map(([lat, lng, intensity], index) => {
-            const radius = 0.00012;
-            return {
-              type: 'Feature',
-              id: index,
-              properties: { intensity: Number(intensity) || 0 },
-              geometry: {
-                type: 'Polygon',
-                coordinates: [[
-                  [lng - radius, lat - radius],
-                  [lng + radius, lat - radius],
-                  [lng + radius, lat + radius],
-                  [lng - radius, lat + radius],
-                  [lng - radius, lat - radius]
-                ]]
-              }
-            };
-          })
-        };
-      };
-
       const toVehicleGeoJSON = (vehicles = []) => ({
         type: 'FeatureCollection',
         features: vehicles.map((vehicle, index) => ({
@@ -2585,28 +2597,31 @@
       const renderLeafletHeat = (points = []) => {
         if (!leafletMap || !leafletLayer || !window.L) return;
         leafletLayer.clearLayers();
-        const sampleEvery = Math.max(1, Math.ceil(points.length / 900));
-        points.forEach(([lat, lng, intensity], index) => {
-          if (index % sampleEvery) return;
-          const marker = window.L.circleMarker([lat, lng], {
-            renderer: leafletRenderer,
-            radius: 3 + Number(intensity) * 10,
-            stroke: false,
-            fillColor: densityColour(Number(intensity)),
-            fillOpacity: 0.48
-          });
-          marker.on('click', () => showInspector(
-            message('densityTitle'),
-            message('densityBody', Number(intensity).toFixed(2), zoneName())
-          ));
-          marker.addTo(leafletLayer);
-        });
+        vehicleMarkers.clear();
+        if (leafletHeat) leafletMap.removeLayer(leafletHeat);
+        if (!window.L.heatLayer) throw new Error('Heatmap engine is unavailable');
+        leafletHeat = window.L.heatLayer(points, {
+          radius: 18, blur: 14, max: 1, maxZoom: 16, minOpacity: 0.08,
+          gradient: { 0.15: '#17364d', 0.42: '#2e7d8f', 0.69: '#d0a34b', 1: '#b74922' }
+        }).addTo(leafletMap);
       };
 
       const renderLeafletVehicles = (vehicles = []) => {
         if (!leafletMap || !leafletLayer || !window.L) return;
-        leafletLayer.clearLayers();
+        if (leafletHeat) { leafletMap.removeLayer(leafletHeat); leafletHeat = null; }
+        const active = new Set(vehicles.map(vehicle => String(vehicle.id)));
+        vehicleMarkers.forEach((marker, id) => {
+          if (!active.has(id)) { leafletLayer.removeLayer(marker); vehicleMarkers.delete(id); }
+        });
         vehicles.forEach((vehicle) => {
+          const id = String(vehicle.id);
+          const existing = vehicleMarkers.get(id);
+          if (existing) {
+            existing.currentVehicle = vehicle;
+            existing.setLatLng([vehicle.lat, vehicle.lng]);
+            existing.setStyle({ fillColor: speedColour(vehicle.speed) });
+            return;
+          }
           const marker = window.L.circleMarker([vehicle.lat, vehicle.lng], {
             renderer: leafletRenderer,
             radius: 5.5,
@@ -2615,16 +2630,18 @@
             fillColor: speedColour(Number(vehicle.speed) || 0),
             fillOpacity: 0.96
           });
+          marker.currentVehicle = vehicle;
           marker.on('click', () => showInspector(
             message('vehicleTitle', String(vehicle.id)),
             message(
               'vehicleBody',
-              Number(vehicle.speed).toFixed(2),
-              i18n.vehicleState(String(vehicle.state || 'unknown')),
+              Number(marker.currentVehicle.speed).toFixed(2),
+              i18n.vehicleState(String(marker.currentVehicle.state || 'unknown')),
               formatTime(state.frames[state.step]?.time)
             )
           ));
           marker.addTo(leafletLayer);
+          vehicleMarkers.set(id, marker);
         });
       };
 
@@ -2648,7 +2665,6 @@
           const camera = { pitch: perspective === '3d' ? 58 : 0, bearing: perspective === '3d' ? -18 : 0 };
           if (animate) map.easeTo({ ...camera, duration: prefersReducedMotion ? 0 : 850 });
           else map.jumpTo(camera);
-          setLayerVisibility('density-extrusions', perspective === '3d' && state.mode === 'heatmap');
           setLayerVisibility('city-buildings-3d', perspective === '3d');
         }
       };
@@ -2677,16 +2693,23 @@
         controls.timeline.setAttribute('aria-valuetext', formatTime(frame.time) + ' / ' + formatTime(state.frames.at(-1)?.time));
         controls.kpiPoints.textContent = numberFormatter.format(frame.vehicles.length);
         controls.kpiPointsLabel.textContent = t('Vehicles this step');
+        const stats = mobility.frameStats(frame.vehicles);
+        controls.kpiSpeed.textContent = stats.meanSpeed === null ? '—' : stats.meanSpeed.toFixed(2) + ' m/s';
       };
 
       const startPlayback = () => {
         if (state.loading || state.mode !== 'simulation' || !state.frames.length) return;
+        if (state.step === state.frames.length - 1) renderStep(0);
         stopPlayback();
         controls.play.textContent = t('Pause');
         controls.play.setAttribute('aria-pressed', 'true');
         controls.play.setAttribute('aria-label', t('Pause simulation'));
-        const playbackSpeed = Number(controls.speed.value) || 1;
-        state.timer = window.setInterval(() => renderStep(state.step + 1), Math.max(90, 420 / playbackSpeed));
+        const playbackSpeed = Number(controls.speed.value) || 20;
+        const interval = state.frames.length > 1 ? state.frames[1].time - state.frames[0].time : 8;
+        state.timer = window.setInterval(() => {
+          if (state.step >= state.frames.length - 1) { stopPlayback(); return; }
+          renderStep(state.step + 1);
+        }, interval * 1000 / playbackSpeed);
       };
 
       const setPlaybackEnabled = (enabled) => {
@@ -2697,12 +2720,12 @@
       };
 
       const updateKPIs = (data, pointCount) => {
-        const kpis = data.kpis || {};
         controls.kpiPoints.textContent = numberFormatter.format(pointCount || 0);
         controls.kpiPointsLabel.textContent = t(state.mode === 'heatmap' ? 'Heat samples' : 'Vehicles this step');
-        controls.kpiRecords.textContent = numberFormatter.format(kpis.vehicleRecords || 0);
-        controls.kpiSpeed.textContent = Number.isFinite(Number(kpis.averageSpeed)) ? Number(kpis.averageSpeed).toFixed(2) + ' m/s' : '—';
-        controls.kpiSteps.textContent = numberFormatter.format(kpis.steps || kpis.totalSteps || 0);
+        controls.kpiRecords.textContent = numberFormatter.format(state.exportStats?.records || 0);
+        const stats = state.mode === 'simulation' ? mobility.frameStats(state.frames[state.step]?.vehicles || []) : null;
+        controls.kpiSpeed.textContent = stats?.meanSpeed != null ? stats.meanSpeed.toFixed(2) + ' m/s' : '—';
+        controls.kpiSteps.textContent = state.mode === 'simulation' ? numberFormatter.format(state.frames.length) : '—';
       };
 
       const simulationBounds = (data) => {
@@ -2739,8 +2762,10 @@
         controls.modeButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.mapMode === state.mode)));
         controls.zoneButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.mapZone === state.zone)));
         controls.zoneLabel.textContent = zoneName();
-        controls.modeLabel.textContent = t(state.mode === 'heatmap' ? 'congestion heatmap' : 'vehicle simulation');
+        controls.modeLabel.textContent = t(state.mode === 'heatmap' ? 'Weighted SUMO samples' : 'Play SUMO vehicles');
         controls.inspector.hidden = true;
+        document.querySelector('#mapSourceHeat').href = ZONES[state.zone].heatmap;
+        document.querySelector('#mapSourceSimulation').href = ZONES[state.zone].simulation;
       };
 
       const loadActiveData = async () => {
@@ -2752,6 +2777,16 @@
         setPlaybackEnabled(false);
         state.data = null;
         state.frames = [];
+        state.exportStats = null;
+        [controls.kpiPoints, controls.kpiRecords, controls.kpiSpeed, controls.kpiSteps].forEach(element => { element.textContent = '—'; });
+        if (state.engine === 'leaflet') {
+          leafletLayer.clearLayers();
+          vehicleMarkers.clear();
+          if (leafletHeat) { leafletMap.removeLayer(leafletHeat); leafletHeat = null; }
+        } else {
+          map.getSource('heat-points')?.setData(EMPTY_COLLECTION);
+          map.getSource('vehicles')?.setData(EMPTY_COLLECTION);
+        }
         state.error = false;
         retryButton.hidden = true;
         setBusy(true);
@@ -2759,19 +2794,20 @@
         try {
           const data = await fetchJSON(path);
           if (request !== state.request) return;
+          if (data.zone !== state.zone) throw new Error('Export zone does not match selected zone');
+          state.exportStats = mobility.validate(data, state.mode);
           state.data = data;
+          if (state.engine === 'leaflet') { leafletLayer.clearLayers(); vehicleMarkers.clear(); }
 
           if (state.mode === 'heatmap') {
             const points = data.points || [];
             if (state.engine === 'maplibre') {
               map.getSource('heat-points').setData(toHeatGeoJSON(points));
-              map.getSource('density-columns').setData(toExtrusions(points));
               map.getSource('vehicles').setData(EMPTY_COLLECTION);
               setLayerVisibility('traffic-heat', true);
               setLayerVisibility('heat-samples', true);
               setLayerVisibility('vehicle-halo', false);
               setLayerVisibility('vehicles', false);
-              setLayerVisibility('density-extrusions', state.perspective === '3d');
             } else {
               renderLeafletHeat(points);
             }
@@ -2787,14 +2823,11 @@
             focusBounds(getBounds(points));
           } else {
             state.frames = data.timesteps || [];
-            const visibleStart = state.frames.findIndex((frame) => (frame.vehicles || []).length >= 20);
-            state.step = visibleStart >= 0 ? visibleStart : 0;
+            state.step = 0;
             if (state.engine === 'maplibre') {
               map.getSource('heat-points').setData(EMPTY_COLLECTION);
-              map.getSource('density-columns').setData(EMPTY_COLLECTION);
               setLayerVisibility('traffic-heat', false);
               setLayerVisibility('heat-samples', false);
-              setLayerVisibility('density-extrusions', false);
               setLayerVisibility('vehicle-halo', true);
               setLayerVisibility('vehicles', true);
             }
@@ -2816,6 +2849,7 @@
           setStatus(message('loaded', zoneName(), baseMode, interactionHint));
         } catch (error) {
           if (request !== state.request) return;
+          cache.delete(path);
           state.data = null;
           state.frames = [];
           state.error = true;
@@ -2824,7 +2858,11 @@
           setPlaybackEnabled(false);
           console.error('Map data error:', error);
         } finally {
-          if (request === state.request) setBusy(false);
+          if (request === state.request) {
+            setBusy(false);
+            if (state.playWhenReady && state.mode === 'simulation' && state.data && !prefersReducedMotion) startPlayback();
+            state.playWhenReady = false;
+          }
         }
       };
 
@@ -2860,7 +2898,7 @@
             layout: { visibility: state.perspective === '3d' ? 'visible' : 'none' },
             paint: {
               'fill-extrusion-color': '#263d4e',
-              'fill-extrusion-height': ['interpolate', ['linear'], ['zoom'], 14, 0, 15, ['coalesce', ['get', 'render_height'], ['get', 'height'], 8]],
+              'fill-extrusion-height': ['interpolate', ['linear'], ['zoom'], 14, 0, 15, ['coalesce', ['get', 'render_height'], ['get', 'height'], 0]],
               'fill-extrusion-base': ['coalesce', ['get', 'render_min_height'], ['get', 'min_height'], 0],
               'fill-extrusion-opacity': 0.76
             }
@@ -2872,7 +2910,6 @@
 
       const addProjectLayers = () => {
         map.addSource('heat-points', { type: 'geojson', data: EMPTY_COLLECTION });
-        map.addSource('density-columns', { type: 'geojson', data: EMPTY_COLLECTION });
         map.addSource('vehicles', { type: 'geojson', data: EMPTY_COLLECTION });
 
         map.addLayer({
@@ -2881,7 +2918,7 @@
           source: 'heat-points',
           maxzoom: 17,
           paint: {
-            'heatmap-weight': ['interpolate', ['linear'], ['get', 'intensity'], 0.1, 0.1, 0.45, 1],
+            'heatmap-weight': ['get', 'intensity'],
             'heatmap-intensity': ['interpolate', ['linear'], ['zoom'], 11, 0.9, 16, 2.25],
             'heatmap-radius': ['interpolate', ['linear'], ['zoom'], 11, 7, 16, 23],
             'heatmap-opacity': 0.76,
@@ -2889,19 +2926,6 @@
           }
         });
 
-        map.addLayer({
-          id: 'density-extrusions',
-          type: 'fill-extrusion',
-          source: 'density-columns',
-          minzoom: 12,
-          layout: { visibility: state.perspective === '3d' ? 'visible' : 'none' },
-          paint: {
-            'fill-extrusion-color': ['interpolate', ['linear'], ['get', 'intensity'], 0.1, '#2e7d8f', 0.28, '#d0a34b', 0.45, '#b74922'],
-            'fill-extrusion-height': ['interpolate', ['linear'], ['get', 'intensity'], 0.1, 12, 0.45, 125],
-            'fill-extrusion-base': 0,
-            'fill-extrusion-opacity': 0.82
-          }
-        });
 
         map.addLayer({
           id: 'heat-samples',
@@ -2932,7 +2956,7 @@
           layout: { visibility: 'none' },
           paint: {
             'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 3, 16, 6],
-            'circle-color': ['interpolate', ['linear'], ['get', 'speed'], 0, '#b74922', 5, '#d0a34b', 12, '#57a7b8'],
+            'circle-color': ['step', ['get', 'speed'], '#b74922', 3, '#d0a34b', 8, '#57a7b8'],
             'circle-stroke-color': '#ffffff',
             'circle-stroke-width': 1,
             'circle-opacity': 0.96
@@ -2941,7 +2965,7 @@
       };
 
       const bindMapInteractions = () => {
-        ['vehicles', 'heat-samples', 'density-extrusions'].forEach((layer) => {
+        ['vehicles', 'heat-samples'].forEach((layer) => {
           map.on('mouseenter', layer, () => { map.getCanvas().style.cursor = 'pointer'; });
           map.on('mouseleave', layer, () => { map.getCanvas().style.cursor = ''; });
         });
@@ -2961,24 +2985,26 @@
           showInspector(message('densityTitle'), message('densityBody', Number(properties.intensity).toFixed(2), zoneName()));
         };
         map.on('click', 'heat-samples', inspectDensity);
-        map.on('click', 'density-extrusions', inspectDensity);
       };
 
       controls.modeButtons.forEach((button) => button.addEventListener('click', () => {
         if (button.dataset.mapMode === state.mode) return;
         state.mode = button.dataset.mapMode;
+        state.playWhenReady = state.mode === 'simulation';
+        mapContainer.parentElement.scrollIntoView?.({ block: 'start', behavior: prefersReducedMotion ? 'auto' : 'smooth' });
         loadActiveData();
       }));
 
       controls.zoneButtons.forEach((button) => button.addEventListener('click', () => {
         if (button.dataset.mapZone === state.zone) return;
         state.zone = button.dataset.mapZone;
+        state.playWhenReady = state.mode === 'simulation';
         loadActiveData();
       }));
 
       controls.viewButtons.forEach((button) => button.addEventListener('click', () => setPerspective(button.dataset.mapView)));
-      controls.previous.addEventListener('click', () => renderStep(state.step - 1));
-      controls.next.addEventListener('click', () => renderStep(state.step + 1));
+      controls.previous.addEventListener('click', () => { stopPlayback(); renderStep(state.step - 1); });
+      controls.next.addEventListener('click', () => { stopPlayback(); renderStep(state.step + 1); });
       controls.play.addEventListener('click', () => state.timer ? stopPlayback() : startPlayback());
       controls.timeline.addEventListener('input', () => { stopPlayback(); renderStep(Number(controls.timeline.value)); });
       controls.speed.addEventListener('change', () => { if (state.timer) startPlayback(); });
@@ -3051,6 +3077,17 @@
             attribution: '&copy; OpenStreetMap contributors'
           }).addTo(leafletMap);
           leafletLayer = Leaflet.layerGroup().addTo(leafletMap);
+          leafletMap.on('click', (event) => {
+            if (state.mode !== 'heatmap' || !state.data) return;
+            const target = leafletMap.latLngToContainerPoint(event.latlng);
+            let nearest = null, best = 144;
+            for (const point of state.data.points) {
+              const screen = leafletMap.latLngToContainerPoint([point[0], point[1]]);
+              const distance = (screen.x - target.x) ** 2 + (screen.y - target.y) ** 2;
+              if (distance < best) { best = distance; nearest = point; }
+            }
+            if (nearest) showInspector(message('densityTitle'), message('densityBody', nearest[2].toFixed(2), zoneName()));
+          });
           mapReady = true;
           setPerspective('2d', false);
           setStatus(message('fallbackActive'));

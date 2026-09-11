@@ -1,0 +1,348 @@
+[
+  {
+    "file": "AI-MCDM Investment Scoring for Smart Cities.pdf",
+    "bytes": 1780253,
+    "sha256": "a0585aa2b2f349d2b3b6fd8e6f7980e31aa133da6b6111406cbb3186c228b17c",
+    "worktree/portfolio-main": "same",
+    "portfolioV-repo": "same",
+    "deployed-repo": "same"
+  },
+  {
+    "file": "CV_El_Ghali_Sany_EN.pdf",
+    "bytes": 279523,
+    "sha256": "c1743cc40ae309555f27b232c76dea975c86a49ff04bbfc0e9ea192fb8c5e479",
+    "worktree/portfolio-main": "same",
+    "portfolioV-repo": "same",
+    "deployed-repo": "same"
+  },
+  {
+    "file": "CV_El_Ghali_Sany_FR.pdf",
+    "bytes": 278851,
+    "sha256": "11dd5f135383f95dbd4267cf299ed9ccbaac939ec0282496d174c7ab4db901ab",
+    "worktree/portfolio-main": "same",
+    "portfolioV-repo": "same",
+    "deployed-repo": "same"
+  },
+  {
+    "file": "bd_mohammed_v_heatmap.json",
+    "bytes": 344589,
+    "sha256": "20156f1717bc14fb75b1cbf47dcd4165cd37ec1c0fc493356cac406f90d393a1",
+    "valid": true,
+    "meta": {
+      "type": "sumo_geo_heatmap",
+      "zone": "bd_mohammed_v",
+      "label": "Bd Mohammed V",
+      "method": "sumolib.net.convertXY2LonLat",
+      "kpis": {
+        "points": 12000,
+        "vehicleRecords": 183555,
+        "totalVehicleRecords": 2197354,
+        "steps": 900,
+        "totalSteps": 3600,
+        "averageSpeed": 2.51
+      },
+      "notes": {
+        "description": "Heatmap géoréférencée depuis les coordonnées SUMO x/y vers latitude/longitude.",
+        "maxPoints": 25000,
+        "stepInterval": 4,
+        "vehicleInterval": 3
+      }
+    },
+    "worktree/portfolio-main": "same",
+    "portfolioV-repo": "same",
+    "deployed-repo": "same"
+  },
+  {
+    "file": "bd_mohammed_v_simulation_geo.json",
+    "bytes": 15409531,
+    "sha256": "2b8445ee726bdc5a22225c4a407bfafb783534a624f2e1bfa41442c2dcbe9d95",
+    "valid": true,
+    "meta": {
+      "type": "sumo_geo_simulation",
+      "zone": "bd_mohammed_v",
+      "label": "Bd Mohammed V",
+      "method": "sumolib.net.convertXY2LonLat",
+      "kpis": {
+        "steps": 450,
+        "totalSteps": 3600,
+        "vehicleRecords": 172079,
+        "totalVehicleRecords": 2197354,
+        "averageSpeed": 2.5,
+        "maxVehiclesPerStep": 450,
+        "stepInterval": 4,
+        "githubReduced": true
+      },
+      "notes": {
+        "description": "Simulation georeferencee depuis les coordonnees SUMO x/y vers latitude/longitude.",
+        "usage": "Charge ce fichier avec simulation.js pour afficher les vehicules sur OpenStreetMap."
+      }
+    },
+    "worktree/portfolio-main": "same",
+    "portfolioV-repo": "same",
+    "deployed-repo": "same"
+  },
+  {
+    "file": "ben_msick_heatmap.json",
+    "bytes": 340012,
+    "sha256": "dc6a57e4c2fd18eb26457c9c6330f0f979922746bf34cf133ac2a6cdc21f9e80",
+    "valid": true,
+    "meta": {
+      "type": "sumo_geo_heatmap",
+      "zone": "ben_msick",
+      "label": "Ben M'Sick",
+      "method": "sumolib.net.convertXY2LonLat",
+      "kpis": {
+        "points": 12000,
+        "vehicleRecords": 76699,
+        "totalVehicleRecords": 916282,
+        "steps": 900,
+        "totalSteps": 3600,
+        "averageSpeed": 10.43
+      },
+      "notes": {
+        "description": "Heatmap géoréférencée depuis les coordonnées SUMO x/y vers latitude/longitude.",
+        "maxPoints": 25000,
+        "stepInterval": 4,
+        "vehicleInterval": 3
+      }
+    },
+    "worktree/portfolio-main": "same",
+    "portfolioV-repo": "same",
+    "deployed-repo": "same"
+  },
+  {
+    "file": "ben_msick_simulation_geo.json",
+    "bytes": 10381756,
+    "sha256": "0e59f6317515d80a3c7d4b1ff2d3925320a27a3ae87eb6437e147a40ee4e2509",
+    "valid": true,
+    "meta": {
+      "type": "sumo_geo_simulation",
+      "zone": "ben_msick",
+      "label": "Ben M'Sick",
+      "method": "sumolib.net.convertXY2LonLat",
+      "kpis": {
+        "steps": 450,
+        "totalSteps": 3600,
+        "vehicleRecords": 114424,
+        "totalVehicleRecords": 916282,
+        "averageSpeed": 10.44,
+        "maxVehiclesPerStep": 450,
+        "stepInterval": 4,
+        "githubReduced": true
+      },
+      "notes": {
+        "description": "Simulation georeferencee depuis les coordonnees SUMO x/y vers latitude/longitude.",
+        "usage": "Charge ce fichier avec simulation.js pour afficher les vehicules sur OpenStreetMap."
+      }
+    },
+    "worktree/portfolio-main": "different",
+    "portfolioV-repo": "same",
+    "deployed-repo": "same"
+  },
+  {
+    "file": "hay_hassani_heatmap.json",
+    "bytes": 344414,
+    "sha256": "9c7433c0034be8b3374ef4b4eafd27b1086c6abc1d5539f06962bd1264c58877",
+    "valid": true,
+    "meta": {
+      "type": "sumo_geo_heatmap",
+      "zone": "hay_hassani",
+      "label": "Hay Hassani",
+      "method": "sumolib.net.convertXY2LonLat",
+      "kpis": {
+        "points": 12000,
+        "vehicleRecords": 144115,
+        "totalVehicleRecords": 1724336,
+        "steps": 900,
+        "totalSteps": 3600,
+        "averageSpeed": 2.55
+      },
+      "notes": {
+        "description": "Heatmap géoréférencée depuis les coordonnées SUMO x/y vers latitude/longitude.",
+        "maxPoints": 25000,
+        "stepInterval": 4,
+        "vehicleInterval": 3
+      }
+    },
+    "worktree/portfolio-main": "same",
+    "portfolioV-repo": "same",
+    "deployed-repo": "same"
+  },
+  {
+    "file": "hay_hassani_simulation_geo.json",
+    "bytes": 13371918,
+    "sha256": "20702f47099bca383fa428fcc0137444637b6971faa40e459b8b0b892e7cef91",
+    "valid": true,
+    "meta": {
+      "type": "sumo_geo_simulation",
+      "zone": "hay_hassani",
+      "label": "Hay Hassani",
+      "method": "sumolib.net.convertXY2LonLat",
+      "kpis": {
+        "steps": 450,
+        "totalSteps": 3600,
+        "vehicleRecords": 148840,
+        "totalVehicleRecords": 1724336,
+        "averageSpeed": 2.54,
+        "maxVehiclesPerStep": 450,
+        "stepInterval": 4,
+        "githubReduced": true
+      },
+      "notes": {
+        "description": "Simulation georeferencee depuis les coordonnees SUMO x/y vers latitude/longitude.",
+        "usage": "Charge ce fichier avec simulation.js pour afficher les vehicules sur OpenStreetMap."
+      }
+    },
+    "worktree/portfolio-main": "same",
+    "portfolioV-repo": "same",
+    "deployed-repo": "same"
+  },
+  {
+    "file": "index.html",
+    "bytes": 467235,
+    "sha256": "dcbd8dd1db26b1e42799d9583440eb87b6d96089c81976b8cfd015ac69889ace",
+    "worktree/portfolio-main": "different",
+    "portfolioV-repo": "different",
+    "deployed-repo": "same"
+  },
+  {
+    "file": "maarif_heatmap.json",
+    "bytes": 343627,
+    "sha256": "2faed0ba90c37b30a09d2fcdc6feb5a9d3c5be3d82643a598935e849b1dbbcc5",
+    "valid": true,
+    "meta": {
+      "type": "sumo_geo_heatmap",
+      "zone": "maarif",
+      "label": "Maârif",
+      "method": "sumolib.net.convertXY2LonLat",
+      "kpis": {
+        "points": 12000,
+        "vehicleRecords": 236569,
+        "totalVehicleRecords": 2832172,
+        "steps": 900,
+        "totalSteps": 3600,
+        "averageSpeed": 3.91
+      },
+      "notes": {
+        "description": "Heatmap géoréférencée depuis les coordonnées SUMO x/y vers latitude/longitude.",
+        "maxPoints": 25000,
+        "stepInterval": 4,
+        "vehicleInterval": 3
+      }
+    },
+    "worktree/portfolio-main": "same",
+    "portfolioV-repo": "same",
+    "deployed-repo": "same"
+  },
+  {
+    "file": "maarif_simulation_geo.json",
+    "bytes": 17102494,
+    "sha256": "e41d7311e772d71a87e7935ea0d940f0b35158e5c969b3edc6f5635b12d6f97c",
+    "valid": true,
+    "meta": {
+      "type": "sumo_geo_simulation",
+      "zone": "maarif",
+      "label": "Maarif",
+      "method": "sumolib.net.convertXY2LonLat",
+      "kpis": {
+        "steps": 450,
+        "totalSteps": 3600,
+        "vehicleRecords": 189811,
+        "totalVehicleRecords": 2832172,
+        "averageSpeed": 3.92,
+        "maxVehiclesPerStep": 450,
+        "stepInterval": 4,
+        "githubReduced": true
+      },
+      "notes": {
+        "description": "Simulation georeferencee depuis les coordonnees SUMO x/y vers latitude/longitude.",
+        "usage": "Charge ce fichier avec simulation.js pour afficher les vehicules sur OpenStreetMap."
+      }
+    },
+    "worktree/portfolio-main": "same",
+    "portfolioV-repo": "same",
+    "deployed-repo": "same"
+  },
+  {
+    "file": "pfe Elghali sany .pdf",
+    "bytes": 3580265,
+    "sha256": "8256a8c341f65e4b0973cc57f7bd2adc3edba8583b922832d0cf5b750165efe0",
+    "worktree/portfolio-main": "same",
+    "portfolioV-repo": "same",
+    "deployed-repo": "same"
+  },
+  {
+    "file": "profile-photo.png",
+    "bytes": 2175589,
+    "sha256": "b1bf4cd170b8dd0a5c3435ff29c8533d7cd9ce0539d55f24431bf1c98737225b",
+    "worktree/portfolio-main": "same",
+    "portfolioV-repo": "same",
+    "deployed-repo": "same"
+  },
+  {
+    "file": "reporting_demo_portfolio.xlsx",
+    "bytes": 25780,
+    "sha256": "200a5503cd1c283217329dd04c35de761d012fde4c9af588ad0ca75557eb203e",
+    "worktree/portfolio-main": "same",
+    "portfolioV-repo": "same",
+    "deployed-repo": "same"
+  },
+  {
+    "file": "sidi_maarouf_heatmap.json",
+    "bytes": 343477,
+    "sha256": "06992968157cdf372af268feb3cc0d24101df198e8327a7eb7da5a0968c065be",
+    "valid": true,
+    "meta": {
+      "type": "sumo_geo_heatmap",
+      "zone": "sidi_maarouf",
+      "label": "Sidi Maârouf",
+      "method": "sumolib.net.convertXY2LonLat",
+      "kpis": {
+        "points": 12000,
+        "vehicleRecords": 180871,
+        "totalVehicleRecords": 2165241,
+        "steps": 900,
+        "totalSteps": 3600,
+        "averageSpeed": 3.64
+      },
+      "notes": {
+        "description": "Heatmap géoréférencée depuis les coordonnées SUMO x/y vers latitude/longitude.",
+        "maxPoints": 25000,
+        "stepInterval": 4,
+        "vehicleInterval": 3
+      }
+    },
+    "worktree/portfolio-main": "same",
+    "portfolioV-repo": "same",
+    "deployed-repo": "same"
+  },
+  {
+    "file": "sidi_maarouf_simulation_geo.json",
+    "bytes": 15443796,
+    "sha256": "c4986eb82e8304b889943ff711bc16344ce6bbcc86ee656c1f446e07dcbf9ec1",
+    "valid": true,
+    "meta": {
+      "type": "sumo_geo_simulation",
+      "zone": "sidi_maarouf",
+      "label": "Sidi Maarouf",
+      "method": "sumolib.net.convertXY2LonLat",
+      "kpis": {
+        "steps": 450,
+        "totalSteps": 3600,
+        "vehicleRecords": 171896,
+        "totalVehicleRecords": 2165241,
+        "averageSpeed": 3.65,
+        "maxVehiclesPerStep": 450,
+        "stepInterval": 4,
+        "githubReduced": true
+      },
+      "notes": {
+        "description": "Simulation georeferencee depuis les coordonnees SUMO x/y vers latitude/longitude.",
+        "usage": "Charge ce fichier avec simulation.js pour afficher les vehicules sur OpenStreetMap."
+      }
+    },
+    "worktree/portfolio-main": "same",
+    "portfolioV-repo": "same",
+    "deployed-repo": "same"
+  }
+]

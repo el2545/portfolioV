@@ -1,0 +1,162 @@
+{
+  "bd_mohammed_v_heatmap.json": {
+    "sha256": "20156f1717bc14fb75b1cbf47dcd4165cd37ec1c0fc493356cac406f90d393a1",
+    "bytes": 344589,
+    "gzipBytes": 64288,
+    "zone": "bd_mohammed_v",
+    "samples": 12000,
+    "weights": {
+      "0.26": 395,
+      "0.1": 1251,
+      "0.18": 528,
+      "0.34": 268,
+      "0.42": 9558
+    },
+    "weightFormula": "Not supplied"
+  },
+  "bd_mohammed_v_simulation_geo.json": {
+    "sha256": "2b8445ee726bdc5a22225c4a407bfafb783534a624f2e1bfa41442c2dcbe9d95",
+    "bytes": 15409531,
+    "gzipBytes": 2361066,
+    "zone": "bd_mohammed_v",
+    "frames": 450,
+    "records": 172079,
+    "firstTime": 1.0,
+    "lastTime": 3593.0,
+    "intervals": {
+      "8.0": 449
+    },
+    "actualMeanSpeed": 2.6586204010948458,
+    "metadataMeanSpeed": 2.5,
+    "maxVehicles": 450,
+    "stationaryRecords": 131307
+  },
+  "ben_msick_heatmap.json": {
+    "sha256": "dc6a57e4c2fd18eb26457c9c6330f0f979922746bf34cf133ac2a6cdc21f9e80",
+    "bytes": 340012,
+    "gzipBytes": 87263,
+    "zone": "ben_msick",
+    "samples": 12000,
+    "weights": {
+      "0.26": 1321,
+      "0.42": 2747,
+      "0.34": 535,
+      "0.1": 5789,
+      "0.18": 1608
+    },
+    "weightFormula": "Not supplied"
+  },
+  "ben_msick_simulation_geo.json": {
+    "sha256": "0e59f6317515d80a3c7d4b1ff2d3925320a27a3ae87eb6437e147a40ee4e2509",
+    "bytes": 10381756,
+    "gzipBytes": 1577292,
+    "zone": "ben_msick",
+    "frames": 450,
+    "records": 114424,
+    "firstTime": 1.0,
+    "lastTime": 3593.0,
+    "intervals": {
+      "8.0": 449
+    },
+    "actualMeanSpeed": 10.438599944067679,
+    "metadataMeanSpeed": 10.44,
+    "maxVehicles": 319,
+    "stationaryRecords": 24065
+  },
+  "hay_hassani_heatmap.json": {
+    "sha256": "9c7433c0034be8b3374ef4b4eafd27b1086c6abc1d5539f06962bd1264c58877",
+    "bytes": 344414,
+    "gzipBytes": 59581,
+    "zone": "hay_hassani",
+    "samples": 12000,
+    "weights": {
+      "0.26": 525,
+      "0.18": 603,
+      "0.34": 311,
+      "0.1": 1414,
+      "0.42": 9147
+    },
+    "weightFormula": "Not supplied"
+  },
+  "hay_hassani_simulation_geo.json": {
+    "sha256": "20702f47099bca383fa428fcc0137444637b6971faa40e459b8b0b892e7cef91",
+    "bytes": 13371918,
+    "gzipBytes": 1892025,
+    "zone": "hay_hassani",
+    "frames": 450,
+    "records": 148840,
+    "firstTime": 1.0,
+    "lastTime": 3593.0,
+    "intervals": {
+      "8.0": 449
+    },
+    "actualMeanSpeed": 2.6995808250470303,
+    "metadataMeanSpeed": 2.54,
+    "maxVehicles": 450,
+    "stationaryRecords": 113221
+  },
+  "maarif_heatmap.json": {
+    "sha256": "2faed0ba90c37b30a09d2fcdc6feb5a9d3c5be3d82643a598935e849b1dbbcc5",
+    "bytes": 343627,
+    "gzipBytes": 75514,
+    "zone": "maarif",
+    "samples": 12000,
+    "weights": {
+      "0.26": 600,
+      "0.18": 897,
+      "0.34": 510,
+      "0.1": 2132,
+      "0.42": 7861
+    },
+    "weightFormula": "Not supplied"
+  },
+  "maarif_simulation_geo.json": {
+    "sha256": "e41d7311e772d71a87e7935ea0d940f0b35158e5c969b3edc6f5635b12d6f97c",
+    "bytes": 17102494,
+    "gzipBytes": 2883744,
+    "zone": "maarif",
+    "frames": 450,
+    "records": 189811,
+    "firstTime": 1.0,
+    "lastTime": 3593.0,
+    "intervals": {
+      "8.0": 449
+    },
+    "actualMeanSpeed": 4.305063615912672,
+    "metadataMeanSpeed": 3.92,
+    "maxVehicles": 450,
+    "stationaryRecords": 117138
+  },
+  "sidi_maarouf_heatmap.json": {
+    "sha256": "06992968157cdf372af268feb3cc0d24101df198e8327a7eb7da5a0968c065be",
+    "bytes": 343477,
+    "gzipBytes": 66091,
+    "zone": "sidi_maarouf",
+    "samples": 12000,
+    "weights": {
+      "0.26": 395,
+      "0.18": 671,
+      "0.1": 1976,
+      "0.42": 8750,
+      "0.34": 208
+    },
+    "weightFormula": "Not supplied"
+  },
+  "sidi_maarouf_simulation_geo.json": {
+    "sha256": "c4986eb82e8304b889943ff711bc16344ce6bbcc86ee656c1f446e07dcbf9ec1",
+    "bytes": 15443796,
+    "gzipBytes": 2411906,
+    "zone": "sidi_maarouf",
+    "frames": 450,
+    "records": 171896,
+    "firstTime": 1.0,
+    "lastTime": 3593.0,
+    "intervals": {
+      "8.0": 449
+    },
+    "actualMeanSpeed": 4.155321240750221,
+    "metadataMeanSpeed": 3.65,
+    "maxVehicles": 450,
+    "stationaryRecords": 115350
+  }
+}

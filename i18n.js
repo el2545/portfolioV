@@ -466,6 +466,51 @@
     }
   };
 
+  Object.assign(COPY.fr, {
+    'Weighted SUMO samples': 'Échantillons SUMO pondérés',
+    'Play SUMO vehicles': 'Lire les véhicules SUMO',
+    'Exported position records': 'Positions dans l’export',
+    'Frame mean speed': 'Vitesse moyenne de l’image',
+    'Exported frames': 'Images exportées',
+    'What these maps measure': 'Ce que mesurent ces cartes',
+    'Download heat samples': 'Télécharger les échantillons pondérés',
+    'Download vehicle records': 'Télécharger les positions des véhicules',
+    'Read the OOH/DOOH thesis': 'Lire le mémoire OOH/DOOH',
+    'How can simulated traffic inform OOH/DOOH location analysis, alongside audience, costs and regulation?': 'Comment le trafic simulé peut-il éclairer l’analyse des emplacements OOH/DOOH, avec l’audience, les coûts et la réglementation ?',
+    'Archived SUMO output from the OOH/DOOH study. Vehicle positions are sampled every 8 seconds, with up to 450 vehicles per exported frame. Repeated positions are not unique viewers or measured advertising impressions.': 'Résultats SUMO archivés de l’étude OOH/DOOH. Les positions sont échantillonnées toutes les 8 secondes, avec jusqu’à 450 véhicules par image exportée. Les positions répétées ne sont ni des personnes uniques ni des impressions publicitaires mesurées.',
+    'The heat layer uses all 12,000 supplied coordinate/weight samples for the selected zone. The export does not document the weight formula. Colour indicates smoothed weighted sample concentration, not a calibrated congestion rate or an investment score.': 'La couche utilise les 12 000 échantillons de coordonnées et de poids fournis pour la zone choisie. La formule des poids n’est pas documentée dans l’export. La couleur représente une concentration pondérée et lissée des échantillons, pas un taux de congestion calibré ni un score d’investissement.',
+    'Vehicle playback uses the supplied IDs, coordinates, timestamps and speeds without invented routes. Stationary vehicles remain stationary. The mean speed is recalculated for the displayed frame; it is not the original full-run average.': 'La lecture reprend les identifiants, coordonnées, horodatages et vitesses fournis, sans inventer de trajectoires. Les véhicules à l’arrêt restent immobiles. La vitesse moyenne est recalculée pour l’image affichée ; ce n’est pas la moyenne de la simulation complète d’origine.',
+    'Traffic is one input to the thesis, alongside audience, CAPEX/OPEX and regulation. The archive does not contain detector coordinates, billboard visibility geometry or the original SUMO network and route files, so this map cannot calculate advertising exposure or reproduce the complete simulation.': 'Le trafic est une composante du mémoire, avec l’audience, les CAPEX/OPEX et la réglementation. L’archive ne contient ni les coordonnées des capteurs, ni la géométrie de visibilité des panneaux, ni les fichiers SUMO originaux du réseau et des itinéraires. Cette carte ne peut donc ni calculer l’exposition publicitaire ni reproduire la simulation complète.'
+  });
+  Object.assign(COPY.ar, {
+    'Weighted SUMO samples': 'عينات SUMO الموزونة',
+    'Play SUMO vehicles': 'تشغيل مركبات SUMO',
+    'Exported position records': 'سجلات المواقع المصدّرة',
+    'Frame mean speed': 'متوسط سرعة الإطار',
+    'Exported frames': 'الإطارات المصدّرة',
+    'What these maps measure': 'ما الذي تقيسه هذه الخرائط؟',
+    'Download heat samples': 'تنزيل العينات الموزونة',
+    'Download vehicle records': 'تنزيل سجلات المركبات',
+    'Read the OOH/DOOH thesis': 'قراءة بحث OOH/DOOH',
+    'How can simulated traffic inform OOH/DOOH location analysis, alongside audience, costs and regulation?': 'كيف يمكن لحركة المرور المحاكاة أن تدعم تحليل مواقع OOH/DOOH إلى جانب الجمهور والتكاليف والتنظيم؟',
+    'Archived SUMO output from the OOH/DOOH study. Vehicle positions are sampled every 8 seconds, with up to 450 vehicles per exported frame. Repeated positions are not unique viewers or measured advertising impressions.': 'مخرجات SUMO مؤرشفة من دراسة OOH/DOOH. أُخذت عينات المواقع كل 8 ثوانٍ، بما يصل إلى 450 مركبة في كل إطار مصدّر. المواقع المتكررة لا تمثل مشاهدين فريدين أو مرات ظهور إعلانية مقاسة.',
+    'The heat layer uses all 12,000 supplied coordinate/weight samples for the selected zone. The export does not document the weight formula. Colour indicates smoothed weighted sample concentration, not a calibrated congestion rate or an investment score.': 'تستخدم الطبقة جميع عينات الإحداثيات والأوزان البالغ عددها 12,000 للمنطقة المختارة. لا يوثّق ملف التصدير معادلة الأوزان. يشير اللون إلى تركّز موزون ومُنعّم للعينات، وليس إلى معدل ازدحام مُعاير أو درجة استثمار.',
+    'Vehicle playback uses the supplied IDs, coordinates, timestamps and speeds without invented routes. Stationary vehicles remain stationary. The mean speed is recalculated for the displayed frame; it is not the original full-run average.': 'يستخدم التشغيل المعرّفات والإحداثيات والأوقات والسرعات المرفقة دون اختلاق مسارات. تبقى المركبات المتوقفة ثابتة. يُعاد حساب متوسط السرعة للإطار المعروض؛ وهو ليس متوسط المحاكاة الأصلية الكاملة.',
+    'Traffic is one input to the thesis, alongside audience, CAPEX/OPEX and regulation. The archive does not contain detector coordinates, billboard visibility geometry or the original SUMO network and route files, so this map cannot calculate advertising exposure or reproduce the complete simulation.': 'المرور أحد مدخلات البحث إلى جانب الجمهور وCAPEX/OPEX والتنظيم. لا يتضمن الأرشيف إحداثيات الكواشف أو هندسة رؤية اللوحات أو ملفات شبكة SUMO ومساراتها الأصلية. لذلك لا يمكن لهذه الخريطة حساب التعرّض الإعلاني أو إعادة إنتاج المحاكاة الكاملة.'
+  });
+  DYNAMIC.en.heatLegend = 'Lower → higher weighted sample concentration; colour depends on zoom';
+  DYNAMIC.fr.heatLegend = 'Concentration pondérée faible → élevée ; la couleur dépend du zoom';
+  DYNAMIC.ar.heatLegend = 'تركّز موزون منخفض إلى مرتفع؛ يعتمد اللون على التكبير';
+  DYNAMIC.en.densityTitle = 'Original weighted sample';
+  DYNAMIC.fr.densityTitle = 'Échantillon pondéré original';
+  DYNAMIC.ar.densityTitle = 'عينة موزونة أصلية';
+  DYNAMIC.en.densityBody = (weight, zone) => `Export weight ${weight} · ${zone} · weight formula not supplied`;
+  DYNAMIC.fr.densityBody = (weight, zone) => `Poids dans l’export : ${weight} · ${zone} · formule non fournie`;
+  DYNAMIC.ar.densityBody = (weight, zone) => `وزن التصدير ${weight} · ${zone} · المعادلة غير مرفقة`;
+  DYNAMIC.en.vehicleLegend = 'Speed: red < 3 m/s · gold 3–<8 m/s · blue ≥ 8 m/s';
+  DYNAMIC.fr.vehicleLegend = 'Vitesse : rouge < 3 m/s · or 3–<8 m/s · bleu ≥ 8 m/s';
+  DYNAMIC.ar.vehicleLegend = 'السرعة: أحمر < 3 m/s · ذهبي 3–<8 m/s · أزرق ≥ 8 m/s';
+
   const normalize = (value) => value.replace(/\s+/g, ' ').trim();
   const textEntries = [];
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {

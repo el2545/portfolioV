@@ -1,6 +1,12 @@
 {
   "name": "el-ghali-sany-portfolio",
   "private": true,
-  "scripts": { "test": "node --test tests/portfolio.test.cjs" },
-  "devDependencies": { "linkedom": "0.18.12" }
+  "scripts": {
+    "test": "node --test tests/portfolio.test.cjs"
+  },
+  "devDependencies": {
+    "leaflet": "^1.9.4",
+    "leaflet.heat": "^0.2.0",
+    "linkedom": "0.18.12"
+  }
 }
