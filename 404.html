@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
+    <meta name="theme-color" content="#061b2f">
+    <title>Page not found — El Ghali Sany</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <style>
+      body { font: 18px/1.7 system-ui, sans-serif; max-width: 56rem; margin: 3rem auto; padding: 1rem; background: #f4f1ea; color: #17202a; }
+      main { display: grid; gap: 1.5rem; }
+      section { border-block-end: 1px solid #ccd0d1; padding-block-end: 1.5rem; }
+      a { color: #174d72; }
+      :focus-visible { outline: 3px solid #066ca5; outline-offset: 4px; }
+    </style>
+    <script>
+      (() => {
+        const path = location.pathname.replace(/\/+$/, "");
+        const base = "/portfolioV";
+        const routes = { [`${base}/en`]: `${base}/`, [`${base}/fr`]: `${base}/fr.html`, [`${base}/ar`]: `${base}/ar.html` };
+        if (routes[path]) location.replace(routes[path] + location.hash);
+      })();
+    </script>
+  </head>
+  <body>
+    <main>
+      <section lang="en">
+        <h1>Page not found</h1>
+        <p>This address does not match a portfolio page.</p>
+        <a href="./">Return to the portfolio</a>
+      </section>
+      <section lang="fr">
+        <h2>Page introuvable</h2>
+        <p>Cette adresse ne correspond à aucune page du portfolio.</p>
+        <a href="fr.html">Revenir au portfolio</a>
+      </section>
+      <section lang="ar" dir="rtl">
+        <h2>الصفحة غير موجودة</h2>
+        <p>لا يتطابق هذا العنوان مع أي صفحة في ملف الأعمال.</p>
+        <a href="ar.html">العودة إلى ملف الأعمال</a>
+      </section>
+    </main>
+  </body>
+</html>
