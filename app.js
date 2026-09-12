@@ -1,3 +1,5 @@
+import { carClass, createCarSprites, interpolateVehicles } from "./vehicle-renderer.js";
+
 (async () => {
   const i18n = window.PORTFOLIO_I18N;
   const t = (source) => i18n?.t(source) || source;
@@ -299,9 +301,9 @@
   let map;
   let leafletMap;
   let leafletLayer;
-  let leafletRenderer;
   let leafletHeat;
   const vehicleMarkers = new Map();
+  const carSprites = createCarSprites();
   let mapReady = false;
   if ("ResizeObserver" in window) {
     new window.ResizeObserver(() => {
@@ -387,12 +389,6 @@
     return window.L;
   };
 
-  const speedColour = (speed) => {
-    if (speed < 3) return "#b74922";
-    if (speed < 8) return "#d0a34b";
-    return "#57a7b8";
-  };
-
   const rasterStyle = {
     version: 8,
     sources: {
@@ -466,6 +462,7 @@
         id: String(vehicle.id),
         speed: Number(vehicle.speed) || 0,
         angle: Number(vehicle.angle) || 0,
+        car: "car-" + carClass(vehicle.speed),
         state: String(vehicle.state || "unknown"),
       },
     })),
@@ -517,6 +514,14 @@
     }).addTo(leafletMap);
   };
 
+  const updateLeafletCar = (marker, vehicle) => {
+    const sprite = marker.getElement()?.firstElementChild;
+    if (!sprite) return;
+    const scale = Math.max(0.4, Math.min(1.2, 0.4 + (leafletMap.getZoom() - 12) * 0.13));
+    sprite.style.backgroundImage = `url("${carSprites[carClass(vehicle.speed)].url}")`;
+    sprite.style.transform = `rotate(${Number(vehicle.angle) || 0}deg) scale(${scale})`;
+  };
+
   const renderLeafletVehicles = (vehicles = []) => {
     if (!leafletMap || !leafletLayer || !window.L) return;
     if (leafletHeat) {
@@ -536,16 +541,19 @@
       if (existing) {
         existing.currentVehicle = vehicle;
         existing.setLatLng([vehicle.lat, vehicle.lng]);
-        existing.setStyle({ fillColor: speedColour(vehicle.speed) });
+        updateLeafletCar(existing, vehicle);
         return;
       }
-      const marker = window.L.circleMarker([vehicle.lat, vehicle.lng], {
-        renderer: leafletRenderer,
-        radius: 5.5,
-        color: "#ffffff",
-        weight: 1,
-        fillColor: speedColour(Number(vehicle.speed) || 0),
-        fillOpacity: 0.96,
+      const marker = window.L.marker([vehicle.lat, vehicle.lng], {
+        icon: window.L.divIcon({
+          className: "di-car-marker",
+          html: '<span class="di-car-sprite" aria-hidden="true"></span>',
+          iconSize: [24, 44],
+          iconAnchor: [12, 22],
+        }),
+        title: message("vehicleTitle", id),
+        keyboard: true,
+        riseOnHover: true,
       });
       marker.currentVehicle = vehicle;
       marker.on("click", () =>
@@ -560,6 +568,16 @@
         ),
       );
       marker.addTo(leafletLayer);
+      marker.getElement().setAttribute("role", "button");
+      marker.getElement().setAttribute("aria-label", message("vehicleTitle", id));
+      marker.on("keydown", ({ originalEvent }) => {
+        if (originalEvent.key === "Enter" || originalEvent.key === " ") {
+          originalEvent.preventDefault();
+          originalEvent.stopPropagation();
+          marker.fire("click");
+        }
+      });
+      updateLeafletCar(marker, vehicle);
       vehicleMarkers.set(id, marker);
     });
   };
@@ -597,11 +615,23 @@
   };
 
   const stopPlayback = () => {
-    if (state.timer) window.clearInterval(state.timer);
+    if (state.timer !== null) window.cancelAnimationFrame(state.timer);
+    const wasPlaying = state.timer !== null;
     state.timer = null;
+    if (wasPlaying && state.frames.length) renderVehicles(state.frames[state.step].vehicles);
     controls.play.textContent = t("Play");
     controls.play.setAttribute("aria-pressed", "false");
     controls.play.setAttribute("aria-label", t("Play simulation"));
+  };
+
+  const renderVehicles = (vehicles) => {
+    if (state.engine === "maplibre") {
+      const vehicleSource = map?.getSource("vehicles");
+      if (!vehicleSource) return;
+      vehicleSource.setData(toVehicleGeoJSON(vehicles));
+    } else {
+      renderLeafletVehicles(vehicles);
+    }
   };
 
   const renderStep = (requestedStep) => {
@@ -610,13 +640,7 @@
     const frame = state.frames[state.step];
     recordPage = 0;
     renderRecords();
-    if (state.engine === "maplibre") {
-      const vehicleSource = map?.getSource("vehicles");
-      if (!vehicleSource) return;
-      vehicleSource.setData(toVehicleGeoJSON(frame.vehicles));
-    } else {
-      renderLeafletVehicles(frame.vehicles);
-    }
+    renderVehicles(frame.vehicles);
     controls.timeline.value = String(state.step);
     controls.currentTime.textContent = formatTime(frame.time);
     controls.timeline.setAttribute(
@@ -640,19 +664,27 @@
     controls.play.textContent = t("Pause");
     controls.play.setAttribute("aria-pressed", "true");
     controls.play.setAttribute("aria-label", t("Pause simulation"));
-    const playbackSpeed = Number(controls.speed.value) || 20;
-    const interval =
-      state.frames.length > 1 ? state.frames[1].time - state.frames[0].time : 8;
-    state.timer = window.setInterval(
-      () => {
-        if (state.step >= state.frames.length - 1) {
-          stopPlayback();
-          return;
-        }
+    const playbackSpeed = Number(controls.speed.value) || 5;
+    let startedAt = performance.now();
+    let lastDraw = 0;
+    const tick = (now) => {
+      const frame = state.frames[state.step];
+      const next = state.frames[state.step + 1];
+      if (!next) { stopPlayback(); return; }
+      const duration = ((next.time - frame.time) * 1000) / playbackSpeed;
+      const progress = Math.min(1, (now - startedAt) / duration);
+      if (progress >= 1) {
         renderStep(state.step + 1);
-      },
-      (interval * 1000) / playbackSpeed,
-    );
+        startedAt = now;
+        if (state.step === state.frames.length - 1) { stopPlayback(); return; }
+      } else if (!prefersReducedMotion && now - lastDraw >= 1000 / 30) {
+        // The export is sampled; this is a visual approximation between positions.
+        renderVehicles(interpolateVehicles(frame.vehicles, next.vehicles, progress));
+        lastDraw = now;
+      }
+      state.timer = window.requestAnimationFrame(tick);
+    };
+    state.timer = window.requestAnimationFrame(tick);
   };
 
   const setPlaybackEnabled = (enabled) => {
@@ -819,7 +851,6 @@
           map.getSource("vehicles").setData(EMPTY_COLLECTION);
           setLayerVisibility("traffic-heat", true);
           setLayerVisibility("heat-samples", true);
-          setLayerVisibility("vehicle-halo", false);
           setLayerVisibility("vehicles", false);
         } else {
           renderLeafletHeat(points);
@@ -841,7 +872,6 @@
           map.getSource("heat-points").setData(EMPTY_COLLECTION);
           setLayerVisibility("traffic-heat", false);
           setLayerVisibility("heat-samples", false);
-          setLayerVisibility("vehicle-halo", true);
           setLayerVisibility("vehicles", true);
         }
         controls.timeline.max = String(Math.max(0, state.frames.length - 1));
@@ -1028,37 +1058,22 @@
       },
     });
 
-    map.addLayer({
-      id: "vehicle-halo",
-      type: "circle",
-      source: "vehicles",
-      layout: { visibility: "none" },
-      paint: {
-        "circle-radius": 8,
-        "circle-color": "rgba(255,255,255,0.17)",
-        "circle-blur": 0.45,
-      },
+    Object.entries(carSprites).forEach(([key, sprite]) => {
+      map.addImage("car-" + key, sprite.image, { pixelRatio: 2 });
     });
-
     map.addLayer({
       id: "vehicles",
-      type: "circle",
+      type: "symbol",
       source: "vehicles",
-      layout: { visibility: "none" },
-      paint: {
-        "circle-radius": ["interpolate", ["linear"], ["zoom"], 11, 3, 16, 6],
-        "circle-color": [
-          "step",
-          ["get", "speed"],
-          "#b74922",
-          3,
-          "#d0a34b",
-          8,
-          "#57a7b8",
-        ],
-        "circle-stroke-color": "#ffffff",
-        "circle-stroke-width": 1,
-        "circle-opacity": 0.96,
+      layout: {
+        visibility: "none",
+        "icon-image": ["get", "car"],
+        "icon-size": ["interpolate", ["linear"], ["zoom"], 12, 0.4, 15, 0.65, 17, 1, 19, 1.2],
+        "icon-rotate": ["get", "angle"],
+        "icon-rotation-alignment": "map",
+        "icon-pitch-alignment": "map",
+        "icon-allow-overlap": true,
+        "icon-ignore-placement": true,
       },
     });
   };
@@ -1107,6 +1122,7 @@
       if (!mapReady) initialiseMap();
       if (button.dataset.mapMode === state.mode) return;
       state.mode = button.dataset.mapMode;
+      if (state.mode === "simulation") setPerspective("2d");
       state.playWhenReady = state.mode === "simulation";
       mapContainer.parentElement.scrollIntoView?.({
         block: "start",
@@ -1189,7 +1205,6 @@
       } finally {
         window.clearTimeout(fallbackTimeout);
       }
-      leafletRenderer = Leaflet.canvas({ padding: 0.5 });
       leafletMap = Leaflet.map(mapContainer, {
         center: [ZONES[state.zone].center[1], ZONES[state.zone].center[0]],
         zoom: 13,
@@ -1204,6 +1219,7 @@
         attribution: "&copy; OpenStreetMap contributors",
       }).addTo(leafletMap);
       leafletLayer = Leaflet.layerGroup().addTo(leafletMap);
+      leafletMap.on("zoomend", () => vehicleMarkers.forEach(marker => updateLeafletCar(marker, marker.currentVehicle)));
       leafletMap.on("click", (event) => {
         if (state.mode !== "heatmap" || !state.data) return;
         const target = leafletMap.latLngToContainerPoint(event.latlng);

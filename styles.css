@@ -338,6 +338,33 @@ pre {
 .di-case-feature__content {
   padding: 32px;
 }
+.di-case-feature--explorer {
+  grid-column: 1 / -1;
+}
+@media (min-width: 1000px) {
+  .di-case-feature--explorer {
+    grid-template-columns: 320px minmax(0, 1fr);
+  }
+  .di-case-feature--explorer .di-map-wrap {
+    grid-template-rows: auto auto 560px auto auto;
+  }
+}
+.di-car-marker {
+  background: transparent;
+  border: 0;
+}
+.di-car-sprite {
+  display: block;
+  width: 24px;
+  height: 44px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  transform-origin: center;
+}
+.di-car-marker:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
 .di-case-index {
   display: block;
   color: var(--di-rust);
