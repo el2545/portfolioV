@@ -1,5 +1,5 @@
 import * as THREE from './three.module.min.js';
-import { drawCampaign, campaignSlot } from './campaign-art.js';
+import { drawCampaign, campaignSlot, campaignDraft } from './campaign-art.js';
 
 export function createBillboards(sites) {
   const group = new THREE.Group();
@@ -25,7 +25,7 @@ export function createBillboards(sites) {
 }
 export function updateBillboardTime(group,time) {
   if(!group)return;
-  for(const board of group.children){const data=board.userData,slot=campaignSlot(time);if(data.kind==='dooh'&&data.slot!==slot){drawCampaign(data.canvas,data.kind,time);data.texture.needsUpdate=true;data.slot=slot;}}
+  for(const board of group.children){const data=board.userData,slot=campaignSlot(time);if(data.revision!==campaignDraft.revision||(data.kind==='dooh'&&data.slot!==slot)){drawCampaign(data.canvas,data.kind,time);data.texture.needsUpdate=true;data.slot=slot;data.revision=campaignDraft.revision;}}
 }
 export function disposeBillboards(group) {
   if(!group)return;

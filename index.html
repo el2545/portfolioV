@@ -92,7 +92,7 @@
       </a>
      </li>
     </ul>
-    <div class="di-nav__tools">
+    <div class="di-nav__tools"><a class="di-nav-cv" href="CV_SANY_El_Ghali_ENG.pdf" aria-label="Read my CV">CV</a>
      <div aria-label="Language selection" class="di-language-switcher" role="group">
       <a aria-current="page" aria-label="View portfolio in English" href="./" hreflang="en" lang="en">
        EN
@@ -133,7 +133,7 @@
        <div class="di-actions">
         <a class="di-button di-button--primary" href="#research">
          View projects
-        </a>
+        </a><a class="di-button di-button--ghost" href="CV_SANY_El_Ghali_ENG.pdf">Read my CV</a><a class="di-hero-contact" href="#contact">Contact me <span aria-hidden="true">↗</span></a>
        </div>
       </div>
       <figure class="di-portrait">
@@ -552,7 +552,7 @@
         </a>
        </p>
       </div>
-     </article>
+     <div class="di-project-actions di-copy-group" data-project="ai-mcdm"><div><a class="di-project-email" href="mailto:sanyghali@gmail.com?subject=Your%20project%3A%20AI-MCDM%20Investment%20Scoring%20for%20Smart%20Cities">Discuss this project ↗</a><button class="di-project-copy" type="button" hidden>Copy project link</button></div><p class="di-copy-status" role="status" aria-live="polite"></p><label class="di-copy-manual" hidden>Text to copy<input type="text" readonly dir="auto" spellcheck="false"></label></div></article>
      <div class="di-case-grid">
       <article class="di-case-feature di-case-feature--explorer" id="mobility">
        <div class="di-case-feature__content">
@@ -745,7 +745,7 @@
         <div class="di-replay-notice" id="replayNotice"><div><strong id="replayState">Loading the scene and vehicle trajectories…</strong><p id="replayHint"></p></div><button id="activeScene" type="button" class="di-map-option" disabled>Active scene ↗</button></div>
 <div aria-describedby="mapHelp" aria-label="Interactive SUMO map of Casablanca" dir="ltr" id="case-map" role="region">
         </div>
-        <aside class="di-ad-scene" id="adScene" hidden aria-label="Teaching billboards · illustrative locations"><div class="di-ad-showcase"><span>Billboard preview · fictional campaign</span><canvas id="adCreative" width="800" height="600" role="img" aria-label="Billboard preview · fictional campaign"></canvas><strong id="adLoopLabel">OOH · one poster throughout the campaign</strong></div><div class="di-ad-context"><strong class="di-ad-scene__label">Teaching billboards · illustrative locations</strong><div class="di-ad-tabs"><button type="button" data-ad-site="A" aria-pressed="true">A · Static OOH</button><button type="button" data-ad-site="B" aria-pressed="false">B · Digital DOOH</button></div><p id="adSiteDescription"></p><p id="adTraffic"></p><p id="adLoopNote" hidden>Illustrative 60-second loop, synchronised with playback. The same audience will not necessarily see all six ads.</p><a href="#advertising-value" id="adExplain">Understand CPM and revenue ↓</a><p class="di-ad-scene-note">Illustrative sites; road segments do not represent measured visibility zones.</p></div><div class="di-ad-cpm-quick"><span>CPM</span><p>CPM = price per 1,000 impressions. Example: 10,000 impressions × MAD 55 / 1,000 = MAD 550.</p></div></aside>
+        <aside class="di-ad-scene" id="adScene" hidden aria-label="Teaching billboards · illustrative locations"><div class="di-ad-showcase"><span>Billboard preview · fictional campaign</span><canvas id="adCreative" width="800" height="600" role="img" aria-label="Billboard preview · fictional campaign"></canvas><strong id="adLoopLabel">OOH · one poster throughout the campaign</strong></div><div class="di-ad-context"><strong class="di-ad-scene__label">Teaching billboards · illustrative locations</strong><div class="di-ad-tabs"><button type="button" data-ad-site="A" aria-pressed="true">A · Static OOH</button><button type="button" data-ad-site="B" aria-pressed="false">B · Digital DOOH</button></div><p id="adSiteDescription"></p><p id="adTraffic"></p><p id="adLoopNote" hidden>Illustrative 60-second loop, synchronised with playback. The same audience will not necessarily see all six ads.</p><a href="#advertising-value" id="adExplain">Understand CPM and revenue ↓</a><p class="di-ad-scene-note">Illustrative sites; road segments do not represent measured visibility zones.</p></div><div class="di-ad-cpm-quick"><span>CPM</span><p>CPM = price per 1,000 impressions. Example: 10,000 impressions × MAD 55 / 1,000 = MAD 550.</p></div><details id="panelWorkshop" class="di-panel-workshop"><summary>Create my billboard and count passing vehicles</summary><div class="di-panel-workshop__grid"><form id="panelForm" novalidate><label for="panelText">Your text on the billboard<input id="panelText" name="text" type="text" maxlength="60" dir="auto" placeholder="Your message" aria-describedby="panelTextHint"></label><p id="panelTextHint">Up to 60 characters. The text appears on the OOH poster and in your selected DOOH slot.</p><div class="di-panel-options"><label for="panelSlot">My DOOH ad slot<select id="panelSlot" name="slot"><option value="0">1 / 6</option><option value="1">2 / 6</option><option value="2">3 / 6</option><option value="3">4 / 6</option><option value="4">5 / 6</option><option value="5">6 / 6</option></select></label><label for="panelPeriod">Counting period<select id="panelPeriod" name="period"><option value="60">Last simulated minute</option><option value="300">Last five simulated minutes</option><option value="0">Since 00:00</option></select></label></div><div class="di-panel-assumptions"><label for="panel-occupants">People per vehicle (assumption)<input id="panel-occupants" name="occupants" type="number" min="0" max="10" step="any" value="1" required dir="ltr"></label><label for="panel-visibility">Assumed share exposed to the ad (%)<input id="panel-visibility" name="visibility" type="number" min="0" max="100" step="any" value="50" required dir="ltr"></label><label for="panel-cpm">Assumed CPM (MAD)<input id="panel-cpm" name="cpm" type="number" min="0" max="10000" step="any" value="55" required dir="ltr"></label></div><p>Teaching assumptions: 1 person per vehicle and 50% exposed, both editable. These are not audience measurements. This scenario applies your settings to the entire selected interval; it does not prove actual ad delivery.</p><button type="button" id="panelPreviewSlot" class="di-map-option">Preview my slot</button><button type="button" id="panelResetText" class="di-map-option">Clear my text</button><p id="panelError" role="alert" hidden></p></form><div class="di-panel-results"><strong id="panelPeriodLabel"></strong><dl><div><dt>Unique vehicles crossing the line</dt><dd id="panel-uniqueVehicles">—</dd></div><div><dt>Confirmed crossings at the line</dt><dd id="panel-crossings">—</dd></div><div><dt>Crossings while my ad is displayed</dt><dd id="panel-eligibleCrossings">—</dd></div><div><dt>Estimated impressions · not measured</dt><dd id="panel-estimatedImpressions">—</dd></div><div><dt>Theoretical CPM value · MAD</dt><dd id="panel-estimatedValue">—</dd></div></dl><p>Estimated impressions = crossings during the ad × people per vehicle × assumed exposed share. Theoretical value = impressions ÷ 1,000 × CPM.</p><p>The replay opens at an active passage, often 10:00. Counters use only the interval displayed here.</p></div></div><details class="di-panel-method"><summary>Counting method and limitations</summary><p>The white line is a counting gate on one lane. A crossing is confirmed when the same vehicle passes it between consecutive observations. Time is interpolated within one second; lane changes and missing samples are excluded. Counts may therefore understate crossings and do not cover the entire road.</p><p>A vehicle can pass more than once. Impressions are not unique people. Pausing, rewinding or changing playback speed adds no extra crossings.</p></details></details></aside>
          <div aria-live="polite" class="di-map-status" id="mapStatus">
          Map not loaded. Choose a layer or enable JavaScript to explore; source files remain available.
         </div>
@@ -822,7 +822,7 @@
          </button>
         </div>
        </details>
-      </article>
+      <div class="di-project-actions di-copy-group" data-project="mobility"><div><a class="di-project-email" href="mailto:sanyghali@gmail.com?subject=Your%20project%3A%20Casablanca%20Mobility%20Explorer">Discuss this project ↗</a><button class="di-project-copy" type="button" hidden>Copy project link</button></div><p class="di-copy-status" role="status" aria-live="polite"></p><label class="di-copy-manual" hidden>Text to copy<input type="text" readonly dir="auto" spellcheck="false"></label></div></article>
       <section id="advertising-value" class="di-ad-study" aria-labelledby="adTitle">
  <header><p class="di-kicker">FROM TRAFFIC TO A DECISION</p><h3 id="adTitle">Why simulate cars to choose a billboard?</h3><p>Traffic helps compare site conditions: vehicle movements, direction and slowdowns. The investment decision then weighs estimated advertising audience against selling prices and costs.</p></header>
  <ol class="di-ad-steps"><li><span aria-hidden="true">01</span><h4>Observe traffic</h4><p>SUMO provides vehicles, trajectories and speeds. The selected road segment makes these conditions readable locally.</p></li><li><span aria-hidden="true">02</span><h4>Estimate audience</h4><p>Panel orientation, obstructions, visibility, occupants and display duration still need checking. One car is not one advertising impression.</p></li><li><span aria-hidden="true">03</span><h4>Sell advertising</h4><p>CPM is the price per 1,000 advertising impressions. At a CPM of MAD 55, 10,000 billable impressions represent MAD 550 in revenue.</p></li><li><span aria-hidden="true">04</span><h4>Test profitability</h4><p>High revenue is not enough: rent, energy, maintenance and the initial investment must also be covered.</p></li></ol>
@@ -946,7 +946,7 @@
          Read the OOH/DOOH thesis (PDF, French)
         </a>
        </div>
-      </article>
+      <div class="di-project-actions di-copy-group" data-project="ooh-dooh"><div><a class="di-project-email" href="mailto:sanyghali@gmail.com?subject=Your%20project%3A%20OOH%20vs%20DOOH%20Investment%20Appraisal">Discuss this project ↗</a><button class="di-project-copy" type="button" hidden>Copy project link</button></div><p class="di-copy-status" role="status" aria-live="polite"></p><label class="di-copy-manual" hidden>Text to copy<input type="text" readonly dir="auto" spellcheck="false"></label></div></article>
       <article class="di-case-card" id="reporting">
        <span class="di-case-index">
         04 / Performance analytics
@@ -982,7 +982,7 @@
          Download reporting demo (XLSX, French)
         </a>
        </div>
-      </article>
+      <div class="di-project-actions di-copy-group" data-project="reporting"><div><a class="di-project-email" href="mailto:sanyghali@gmail.com?subject=Your%20project%3A%20Debt-Recovery%20Performance%20Analytics">Discuss this project ↗</a><button class="di-project-copy" type="button" hidden>Copy project link</button></div><p class="di-copy-status" role="status" aria-live="polite"></p><label class="di-copy-manual" hidden>Text to copy<input type="text" readonly dir="auto" spellcheck="false"></label></div></article>
      </div>
     </div>
    </section>
@@ -1235,7 +1235,7 @@
        For academic, research or professional enquiries, email me or use LinkedIn.
       </p>
       <div class="di-contact__links">
-       <a href="mailto:sanyghali@gmail.com">
+       <a href="mailto:sanyghali@gmail.com?subject=About%20your%20portfolio&amp;body=Hello%20El%20Ghali%2C%0A%0A">
         <span>
          Email
         </span>
@@ -1252,12 +1252,14 @@
         </strong>
        </a>
       </div>
+<div class="di-contact-tools" aria-label="Contact details and documents"><div class="di-copy-group"><button class="di-utility-button" type="button" data-copy-email hidden>Copy email</button><p class="di-copy-status" role="status" aria-live="polite"></p><label class="di-copy-manual" hidden>Text to copy<input type="text" readonly dir="auto" spellcheck="false"></label></div><a class="di-phone" href="tel:+971547719158"><span>Phone · United Arab Emirates</span><bdi dir="ltr">+971 54 771 9158</bdi></a><a class="di-utility-button" href="El-Ghali-Sany.vcf" download>Save my contact details ↓</a><p class="di-contact-note">Contact card · name, email and phone</p></div>
      </div>
+<section class="di-cv-library" id="cv" aria-labelledby="cv-title"><h3 id="cv-title">My CV, in your language</h3><p>One page · PDF · view or download</p><div class="di-cv-list"><div class="di-cv-item"><strong lang="fr" dir="auto">Français</strong><span class="di-cv-meta"><bdi>PDF · 175 KB</bdi></span><div><a href="CV_SANY_El_Ghali_FR.pdf" target="_blank" rel="noopener" aria-label="Read here">Read here</a><a href="CV_SANY_El_Ghali_FR.pdf" download aria-label="Download · Français">Download ↓</a></div></div><div class="di-cv-item"><strong lang="en" dir="auto">English</strong><span class="di-cv-meta"><bdi>PDF · 156 KB</bdi></span><div><a href="CV_SANY_El_Ghali_ENG.pdf" target="_blank" rel="noopener" aria-label="Read here">Read here</a><a href="CV_SANY_El_Ghali_ENG.pdf" download aria-label="Download · English">Download ↓</a></div></div><div class="di-cv-item"><strong lang="ar" dir="auto">العربية</strong><span class="di-cv-meta"><bdi>PDF · 152 KB</bdi></span><div><a href="CV_SANY_El_Ghali_AR.pdf" target="_blank" rel="noopener" aria-label="Read here">Read here</a><a href="CV_SANY_El_Ghali_AR.pdf" download aria-label="Download · العربية">Download ↓</a></div></div></div></section>
     </div>
    </section>
   </main>
   <footer class="di-footer">
-   <div class="di-footer__inner">
+   <div class="di-footer__inner"><a href="#profile">↑ Back to top</a>
     <span>
      ©
      <span id="di-year">
@@ -1269,10 +1271,14 @@
     </span>
    </div>
   </footer>
+  <a class="di-back-top" href="#profile" hidden><span aria-hidden="true">↑</span> Back to top</a>
+<dialog id="pdfReader" class="di-pdf-reader" aria-labelledby="pdfTitle"><header class="di-pdf-header"><div><h2 id="pdfTitle">Document reader</h2><p id="pdfName" dir="auto"></p></div><button id="pdfClose" type="button" autofocus>Close ×</button></header><div class="di-pdf-toolbar"><form id="pdfPageForm" novalidate><button id="pdfPrevious" type="button" aria-label="Previous page">‹</button><label for="pdfPage">Page</label><input id="pdfPage" type="number" min="1" step="1" value="1" required dir="ltr" aria-describedby="pdfStatus"><span>of <bdi id="pdfTotal">—</bdi></span><button id="pdfNext" type="button" aria-label="Next page">›</button></form><label class="di-pdf-zoom">Zoom<select id="pdfZoom"><option value="fit">Page width</option><option value="1">100%</option><option value="1.5">150%</option><option value="2">200%</option></select></label><div class="di-pdf-links"><a id="pdfExternal" target="_blank" rel="noopener">Open PDF ↗</a><a id="pdfDownload" download>Download ↓</a></div></div><div class="di-pdf-status"><p id="pdfStatus" role="status" aria-live="polite"></p><button id="pdfRetry" type="button" hidden>Retry</button></div><div id="pdfScroll" class="di-pdf-scroll"><canvas id="pdfCanvas" role="img" hidden></canvas><details id="pdfTextDetails"><summary>Page text</summary><p>Text extracted from the PDF; reading order may differ from the page layout.</p><div id="pdfText" dir="auto"></div></details></div></dialog>
+  <script src="pdf-reader.js" defer></script>
   <script src="mobility-data.js">
   </script>
   <script src="locale.js">
   </script>
+  <script src="visitor-tools.js" defer></script>
   <script src="research.js">
   </script>
   <script src="app.js" type="module">
