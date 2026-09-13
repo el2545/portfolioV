@@ -1,4 +1,5 @@
 import * as THREE from './three.module.min.js';
+import { drawCampaign, campaignSlot } from './campaign-art.js';
 
 export function createBillboards(sites) {
   const group = new THREE.Group();
@@ -12,20 +13,19 @@ export function createBillboards(sites) {
     add(new THREE.BoxGeometry(4.25,.28,3.25),metal,0,0,5.6);
     // Text is a texture on a physical 4 x 3 m face, with a separate rear panel.
     const canvas=document.createElement('canvas');canvas.width=800;canvas.height=600;
-    const ctx=canvas.getContext('2d');const digital=site.kind==='dooh';
-    ctx.fillStyle=digital?'#123f49':'#ead9b6';ctx.fillRect(0,0,800,600);
-    ctx.fillStyle=digital?'#81d0c8':'#855428';ctx.fillRect(45,44,90,12);
-    ctx.font='bold 58px sans-serif';ctx.fillText(site.id,680,90);
-    ctx.font='bold 118px sans-serif';ctx.fillText(digital?'DOOH':'OOH',45,260);
-    // Identical colour across slots: the sequence never impersonates traffic signals.
-    for(let i=0;i<(digital?6:1);i++) {ctx.fillStyle=digital?'#81d0c8':'#855428';ctx.fillRect(45+i*119,410,digital?98:710,70);}
+    drawCampaign(canvas,site.kind,0);
     const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;
     const face=new THREE.MeshBasicMaterial({map:texture,toneMapped:false});
+    board.userData={canvas,texture,kind:site.kind,slot:-1};
     const front=add(new THREE.PlaneGeometry(4,3),face,0,-.151,5.6);front.rotation.x=Math.PI/2;
     const back=add(new THREE.PlaneGeometry(4,3),face,0,.151,5.6);back.rotation.set(Math.PI/2,Math.PI,0);
     group.add(board);
   }
   return group;
+}
+export function updateBillboardTime(group,time) {
+  if(!group)return;
+  for(const board of group.children){const data=board.userData,slot=campaignSlot(time);if(data.kind==='dooh'&&data.slot!==slot){drawCampaign(data.canvas,data.kind,time);data.texture.needsUpdate=true;data.slot=slot;}}
 }
 export function disposeBillboards(group) {
   if(!group)return;

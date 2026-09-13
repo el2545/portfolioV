@@ -588,12 +588,8 @@
           Couche d’analyse
          </span>
          <div class="di-map-segmented">
-          <button aria-pressed="true" class="di-map-option" data-map-mode="heatmap" type="button">
-           Échantillons SUMO pondérés
-          </button>
-          <button aria-pressed="false" class="di-map-option" data-map-mode="simulation" type="button">
-           Lire les véhicules SUMO
-          </button>
+          <button aria-pressed="true" class="di-map-option" data-map-mode="simulation" type="button">Trafic et panneaux</button>
+          <button aria-pressed="false" class="di-map-option" data-map-mode="heatmap" type="button">Densité · vue statique</button>
          </div>
          <span class="di-map-control-label">
           Zone de Casablanca
@@ -746,14 +742,10 @@
           </button>
          </div>
         </div>
-        <div aria-describedby="mapHelp" aria-label="Carte interactive SUMO de Casablanca" dir="ltr" id="case-map" role="region">
+        <div class="di-replay-notice" id="replayNotice"><div><strong id="replayState">Chargement de la scène et des trajectoires…</strong><p id="replayHint"></p></div><button id="activeScene" type="button" class="di-map-option" disabled>Scène active ↗</button></div>
+<div aria-describedby="mapHelp" aria-label="Carte interactive SUMO de Casablanca" dir="ltr" id="case-map" role="region">
         </div>
-        <aside class="di-ad-scene" id="adScene" hidden aria-label="Panneaux pédagogiques · emplacements illustratifs">
- <strong class="di-ad-scene__label">Panneaux pédagogiques · emplacements illustratifs</strong>
- <div class="di-ad-tabs"><button type="button" data-ad-site="A" aria-pressed="true">A · OOH statique</button><button type="button" data-ad-site="B" aria-pressed="false">B · DOOH numérique</button></div>
- <p id="adSiteDescription">Une affiche, un annonceur : l’emplacement est loué au mois.</p><p id="adTraffic"></p>
- <a href="#advertising-value" id="adExplain">Comprendre le CPM et les recettes ↓</a>
- </aside>
+        <aside class="di-ad-scene" id="adScene" hidden aria-label="Panneaux pédagogiques · emplacements illustratifs"><div class="di-ad-showcase"><span>Aperçu du support · campagne fictive</span><canvas id="adCreative" width="800" height="600" role="img" aria-label="Aperçu du support · campagne fictive"></canvas><strong id="adLoopLabel">OOH · une affiche pendant la campagne</strong></div><div class="di-ad-context"><strong class="di-ad-scene__label">Panneaux pédagogiques · emplacements illustratifs</strong><div class="di-ad-tabs"><button type="button" data-ad-site="A" aria-pressed="true">A · OOH statique</button><button type="button" data-ad-site="B" aria-pressed="false">B · DOOH numérique</button></div><p id="adSiteDescription"></p><p id="adTraffic"></p><p id="adLoopNote" hidden>Boucle illustrative de 60 secondes, synchronisée avec la lecture. Le même public ne voit pas forcément les six annonces.</p><a href="#advertising-value" id="adExplain">Comprendre le CPM et les recettes ↓</a><p class="di-ad-scene-note">Sites illustratifs ; les tronçons ne représentent pas une zone de visibilité mesurée.</p></div><div class="di-ad-cpm-quick"><span>CPM</span><p>CPM = prix pour 1 000 impressions. Exemple : 10 000 impressions × 55 MAD / 1 000 = 550 MAD.</p></div></aside>
          <div aria-live="polite" class="di-map-status" id="mapStatus">
          Carte non chargée. Choisissez une couche ou activez JavaScript pour explorer ; les fichiers sources restent accessibles.
         </div>

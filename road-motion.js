@@ -136,8 +136,10 @@ export class TrafficReplay {
     if (manifest.type !== 'sumo_lane_replay' || manifest.version !== 1 || manifest.step !== 1 || network.zone !== manifest.zone) throw new Error('Invalid traffic manifest');
     this.manifest = manifest; this.network = network; this.read = read;
     this.chunks = new Map(); this.decoded = new Map(); this.transitions = null;
+    this.pinned = new Set();
     this.frames = Array.from({ length: manifest.end - manifest.start + 1 }, (_, i) => ({ time: manifest.start + i, vehicles: [] }));
   }
+  pin(index) { this.pinned = new Set([index, Math.min(index + 1, this.frames.length - 1)]); }
   async frame(index) {
     index = clamp(index, 0, this.frames.length - 1);
     if (this.decoded.has(index)) return this.frames[index];
@@ -157,7 +159,11 @@ export class TrafficReplay {
     });
     this.frames[index] = { time, vehicles };
     this.decoded.set(index, true);
-    while (this.decoded.size > 4) { const old = this.decoded.keys().next().value; this.frames[old] = { time: this.frames[old].time, vehicles: [] }; this.decoded.delete(old); }
+    while (this.decoded.size > 4) {
+      const old = [...this.decoded.keys()].find(key => !this.pinned.has(key));
+      if(old === undefined)break;
+      this.frames[old] = { time: this.frames[old].time, vehicles: [] }; this.decoded.delete(old);
+    }
     if (chunkIndex + 1 < this.manifest.chunks.length && time > this.manifest.chunks[chunkIndex].last - 10) this.chunk(chunkIndex + 1).catch(() => {});
     return this.frames[index];
   }

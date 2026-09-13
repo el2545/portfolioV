@@ -60,6 +60,18 @@ Five-year balance = 5 × (annual revenue − annual OPEX) − initial CAPEX. Bre
 
 Run `node advertising-model.test.mjs` from the repository root to verify thesis arithmetic, audience allocation, break-even, invalid/zero cases and billboard-segment counts against the supplied recordings. No additional Node packages are required for that check.
 
+## v4 — traffic-first navigation and readable advertising
+
+The explorer opens on recorded vehicles. The density layer is explicitly static and top-down, with a continuous heat surface instead of individual point markers. Playback and the street-view button are hidden in this static mode. Raw samples remain in the source table and downloadable files.
+
+The replay banner distinguishes loading, buffering, paused playback, running playback, the end of the recording, an empty viewport, and vehicles stopped in the source. “Active scene” navigates to a recorded instant with at least three vehicles above 1 m/s within 160 m of the default street camera. `active-scenes.json` indexes those instants at ten-second intervals; it changes neither trajectories nor audience assumptions. Fullscreen errors expose Retry through the same action button.
+
+Rapid timeline scrubbing pins the selected and following frames while late responses finish, so obsolete requests cannot evict the pair used for playback. A newly loaded zone's replay is committed only after its initial frames are ready and its request is still current. The 3D renderer submits vehicles near the viewport rather than rebuilding instances for the entire zone; original records and metrics are retained. Below zoom 16, cars and billboard pins are hidden and the banner directs visitors back to street view. Billboard selection preserves 2D and uses a front-facing camera bearing in 3D.
+
+The explanation sits below the map. `campaign-art.js` draws original, fictional teaching artwork both on the physical billboard and in a readable preview. OOH remains fixed. DOOH uses six ten-second slots in a sixty-second loop, driven by recorded simulation time. Pausing or seeking also pauses or seeks the illustrative ad loop. Layout changes and the slot indicator represent ad changes; vehicle colours remain fixed. This demonstrates scheduling, not measured advertising delivery. The CPM calculator remains independent of traffic time, camera and zone.
+
+Additional check: `node replay-cache.test.mjs` verifies late-response cache protection and DOOH slot boundaries. Browser checks were repeated in Chrome at 1440, 768 and 390 px, including the Leaflet fallback, rapid zone/seek changes, empty frames, active-scene navigation, 2D/3D selection, fullscreen and the unchanged financial calculator. Lane reconstruction checks covered 33,262 transitions around the initial views in the five zones, not every transition in the hour. Full source traffic, road-network JSON, PDFs and existing data assets are byte-for-byte unchanged from v3.
+
 ## Serving the replay
 
 Serve through HTTP or GitHub Pages, not by double-clicking HTML. Upload all files at the repository root, including every traffic chunk, the five road networks, `road-motion.js`, `traffic-3d.js`, and `three.module.min.js`. There is no package installation or build step for deployment. Traffic chunks are plain JSON for browser compatibility; the release omits redundant compressed copies of these chunks. Individual files remain below 25 MB. Large uploads can be split into batches. Basemap tiles still require internet access.

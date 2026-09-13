@@ -588,12 +588,8 @@
           Analysis layer
          </span>
          <div class="di-map-segmented">
-          <button aria-pressed="true" class="di-map-option" data-map-mode="heatmap" type="button">
-           Weighted SUMO samples
-          </button>
-          <button aria-pressed="false" class="di-map-option" data-map-mode="simulation" type="button">
-           Play SUMO vehicles
-          </button>
+          <button aria-pressed="true" class="di-map-option" data-map-mode="simulation" type="button">Traffic & billboards</button>
+          <button aria-pressed="false" class="di-map-option" data-map-mode="heatmap" type="button">Density · static view</button>
          </div>
          <span class="di-map-control-label">
           Casablanca zone
@@ -746,14 +742,10 @@
           </button>
          </div>
         </div>
-        <div aria-describedby="mapHelp" aria-label="Interactive SUMO map of Casablanca" dir="ltr" id="case-map" role="region">
+        <div class="di-replay-notice" id="replayNotice"><div><strong id="replayState">Loading the scene and vehicle trajectories…</strong><p id="replayHint"></p></div><button id="activeScene" type="button" class="di-map-option" disabled>Active scene ↗</button></div>
+<div aria-describedby="mapHelp" aria-label="Interactive SUMO map of Casablanca" dir="ltr" id="case-map" role="region">
         </div>
-        <aside class="di-ad-scene" id="adScene" hidden aria-label="Teaching billboards · illustrative locations">
- <strong class="di-ad-scene__label">Teaching billboards · illustrative locations</strong>
- <div class="di-ad-tabs"><button type="button" data-ad-site="A" aria-pressed="true">A · Static OOH</button><button type="button" data-ad-site="B" aria-pressed="false">B · Digital DOOH</button></div>
- <p id="adSiteDescription">One poster, one advertiser: the site is rented by the month.</p><p id="adTraffic"></p>
- <a href="#advertising-value" id="adExplain">Understand CPM and revenue ↓</a>
- </aside>
+        <aside class="di-ad-scene" id="adScene" hidden aria-label="Teaching billboards · illustrative locations"><div class="di-ad-showcase"><span>Billboard preview · fictional campaign</span><canvas id="adCreative" width="800" height="600" role="img" aria-label="Billboard preview · fictional campaign"></canvas><strong id="adLoopLabel">OOH · one poster throughout the campaign</strong></div><div class="di-ad-context"><strong class="di-ad-scene__label">Teaching billboards · illustrative locations</strong><div class="di-ad-tabs"><button type="button" data-ad-site="A" aria-pressed="true">A · Static OOH</button><button type="button" data-ad-site="B" aria-pressed="false">B · Digital DOOH</button></div><p id="adSiteDescription"></p><p id="adTraffic"></p><p id="adLoopNote" hidden>Illustrative 60-second loop, synchronised with playback. The same audience will not necessarily see all six ads.</p><a href="#advertising-value" id="adExplain">Understand CPM and revenue ↓</a><p class="di-ad-scene-note">Illustrative sites; road segments do not represent measured visibility zones.</p></div><div class="di-ad-cpm-quick"><span>CPM</span><p>CPM = price per 1,000 impressions. Example: 10,000 impressions × MAD 55 / 1,000 = MAD 550.</p></div></aside>
          <div aria-live="polite" class="di-map-status" id="mapStatus">
          Map not loaded. Choose a layer or enable JavaScript to explore; source files remain available.
         </div>

@@ -1514,3 +1514,44 @@ html[dir="rtl"] #mapNext {
   .di-ad-tabs button { font-size: 12px; min-height: 40px; padding: 7px; }
   .di-ad-scene p { margin-block: 5px; }
 }
+/* v4: the map, recorded traffic state and advertising explanation have separate space. */
+.di-case-feature--explorer .di-map-wrap {
+  position: relative; top: auto;
+  grid-template-areas: "play" "tools" "notice" "map" "ad" "status" "legend";
+  grid-template-rows: auto auto auto 560px auto auto auto;
+}
+.di-playback[hidden] { display: none; }
+.di-replay-notice { grid-area: notice; display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 13px 16px; background: #143445; border-block: 1px solid #47616b; color: #f1f5ef; }
+.di-replay-notice strong { font-size: 13px; font-weight: 600; }
+.di-replay-notice p { font-size: 12px; line-height: 1.5; margin: 3px 0 0; max-width: 780px; color: #d5e1dc; }
+.di-replay-notice button { flex-shrink: 0; color: white; border-color: #9cb6aa; }
+.di-map-wrap.is-loading #case-map::after { content: ""; position: absolute; inset: 0; z-index: 2; background: linear-gradient(120deg,#112e43aa,#112e4355); pointer-events: none; }
+.di-case-feature--explorer .di-ad-scene { grid-area: ad; display: grid; grid-template-columns: 150px minmax(0,1fr) 175px; gap: 20px; width: 100%; margin: 0; padding: 20px; border: 0; box-shadow: none; background: #f2f1e9; line-height: 1.5; }
+.di-case-feature--explorer .di-ad-scene[hidden] { display: none; }
+.di-ad-showcase > span { display: block; font-size: 10px; color: #506059; margin-block-end: 8px; }
+.di-ad-showcase canvas { display: block; width: 100%; height: auto; border: 6px solid #34464a; box-shadow: 0 2px 3px #0002; }
+.di-ad-showcase strong { display: block; margin-block-start: 8px; font-size: 11px; color: #274a40; }
+.di-ad-context { min-width: 0; }
+.di-ad-context .di-ad-scene__label { font-size: 10px; }
+.di-ad-cpm-quick { border-inline-start: 1px solid #b7c4ba; padding-inline-start: 18px; }
+.di-ad-cpm-quick > span { font: 500 29px var(--di-display); color: #27534b; }
+.di-ad-cpm-quick p { font-size: 12px; color: #3e554a; }
+.di-ad-context p.di-ad-scene-note { color: #526258; font-size: 10px; margin-block-end: 0; }
+.di-ad-pin { min-width: 30px; min-height: 30px; padding: 3px; font-size: 13px; }
+.di-case-feature--explorer .di-map-wrap:fullscreen { grid-template-rows: auto auto auto minmax(160px,1fr) auto auto auto; }
+.di-map-wrap:fullscreen .di-map-status,.di-map-wrap:fullscreen .di-map-legend { display: none; }
+@media (max-width:1000px) {
+  .di-case-feature--explorer .di-map-wrap { grid-template-rows: auto auto auto 420px auto auto auto; }
+}
+@media (max-width:600px) {
+  .di-case-feature--explorer .di-map-wrap { grid-template-rows: auto auto auto 360px auto auto auto; }
+  .di-case-feature--explorer .di-ad-scene { grid-template-columns: 100px minmax(0,1fr); padding: 14px; gap: 13px; }
+  .di-ad-cpm-quick { display: none; }
+  .di-ad-tabs button { min-height: 38px; }
+  .di-replay-notice { padding: 10px 13px; align-items: start; gap: 7px; }
+  .di-replay-notice button { font-size: 11px; max-width: 90px; padding: 8px; }
+  .di-case-feature--explorer .di-map-wrap:fullscreen { grid-template-rows: auto auto auto minmax(130px,1fr) auto auto auto; overflow-y: auto; }
+  .di-map-wrap:fullscreen .di-ad-scene { grid-template-columns: 72px minmax(0,1fr); padding: 10px; }
+  .di-map-wrap:fullscreen #adTraffic,.di-map-wrap:fullscreen #adLoopNote,.di-map-wrap:fullscreen .di-ad-scene-note { display: none; }
+}
+

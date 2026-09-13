@@ -160,7 +160,7 @@ import { AdvertisingExplorer, initAdvertisingCalculator } from "./advertising.js
 
   const state = {
     zone: "maarif",
-    mode: "heatmap",
+    mode: "simulation",
     perspective: "3d",
     engine: maplibregl ? "maplibre" : "leaflet",
     frames: [],
@@ -172,6 +172,7 @@ import { AdvertisingExplorer, initAdvertisingCalculator } from "./advertising.js
     loading: false,
     error: false,
     playWhenReady: false,
+    seeking: false,
     exportStats: null,
   };
 
@@ -310,6 +311,7 @@ import { AdvertisingExplorer, initAdvertisingCalculator } from "./advertising.js
   let traffic = null;
   let trafficLayer = null;
   let adExplorer = null;
+  let activeScenes = [];
   let seekRequest = 0;
   let playbackToken = 0;
   let displayedVehicles = [];
@@ -329,10 +331,34 @@ import { AdvertisingExplorer, initAdvertisingCalculator } from "./advertising.js
     state.loading = busy;
     mapContainer.parentElement.classList.toggle("is-loading", busy);
     mapContainer.setAttribute("aria-busy", String(busy));
+    updateReplayNotice();
     document
       .querySelector(".di-map-kpis")
       .setAttribute("aria-busy", String(busy));
   };
+
+  function updateReplayNotice() {
+    const element=document.querySelector('#replayState'),hint=document.querySelector('#replayHint');
+    const ad=key=>i18n.ad(key);
+    document.querySelector('.di-playback').hidden=state.mode==='heatmap';
+    document.querySelector('#mapStreet').hidden=state.mode==='heatmap';
+    document.querySelector('#activeScene').hidden=state.mode==='heatmap';
+    const sceneAction=document.querySelector('#activeScene');
+    sceneAction.textContent=state.error?retryButton.textContent.trim():ad('activeScene')+' ↗';
+    sceneAction.disabled=state.loading||(!state.error&&!activeScenes.length);
+    if(state.loading){element.textContent=ad('loadingScene');hint.textContent='';return;}
+    if(state.mode==='heatmap'){element.textContent=ad('densityTab');hint.textContent=ad('staticHint');return;}
+    if(state.error){element.textContent=ad('loadFailure');hint.textContent='';return;}
+    if(state.seeking){element.textContent=ad('buffering');hint.textContent='';return;}
+    const playing=controls.play.getAttribute('aria-pressed')==='true';
+    element.textContent=ad(state.step===state.frames.length-1?'ended':playing?'playing':'paused');
+    const zoom=map?.getZoom()??leafletMap?.getZoom()??0;
+    if(zoom<16){hint.textContent=ad('overviewHint');return;}
+    let visible=displayedVehicles;
+    if(map){const c=map.getCanvas();visible=visible.filter(v=>{const pt=map.project([v.lng,v.lat]);return pt.x>=0&&pt.y>=0&&pt.x<=c.clientWidth&&pt.y<=c.clientHeight;});}
+    else if(leafletMap)visible=visible.filter(v=>leafletMap.getBounds().contains([v.lat,v.lng]));
+    hint.textContent=ad(!visible.length?'emptyView':visible.every(v=>v.speed<.1)?'stoppedView':!playing?'resumeHint':'sceneNoteShort');
+  }
 
   const zoneName = (zone = state.zone) => i18n.zoneLabel(zone);
 
@@ -364,8 +390,8 @@ import { AdvertisingExplorer, initAdvertisingCalculator } from "./advertising.js
           })
           .finally(() => window.clearTimeout(timeout)),
       );
-      // Retain at most two datasets: five full simulations are costly on phones.
-      while (cache.size > 2) cache.delete(cache.keys().next().value);
+      // Two heavy datasets plus the small teaching/navigation manifests.
+      while (cache.size > 4) cache.delete(cache.keys().next().value);
     }
     return cache.get(path);
   };
@@ -625,8 +651,17 @@ import { AdvertisingExplorer, initAdvertisingCalculator } from "./advertising.js
   document.querySelector("#mapStreet")?.addEventListener("click", focusStreet);
   document.querySelector("#adStart")?.addEventListener("click", () => {
     if(state.mode !== "simulation" || !mapReady) document.querySelector('[data-map-mode="simulation"]').click();
-    else adExplorer?.select(adExplorer.selected,true);
+    else {adExplorer?.select(adExplorer.selected,true);startPlayback();}
     mapContainer.scrollIntoView({block:"center"});
+  });
+  document.querySelector("#activeScene")?.addEventListener("click", async () => {
+    if(state.error){retryButton.click();return;}
+    if(!activeScenes.length||state.loading)return;
+    const request=state.request;stopPlayback();
+    const next=activeScenes.find(entry=>entry.time>state.step+5)||activeScenes[0];
+    const pending=renderStep(next.time),seek=seekRequest;
+    await pending;if(request!==state.request||seek!==seekRequest||state.error)return;
+    focusStreet();if(!prefersReducedMotion)startPlayback();
   });
   document.querySelector("#mapOverview")?.addEventListener("click", () => focusBounds(state.data?.bounds || getBounds(state.data?.points || [])));
 
@@ -637,7 +672,7 @@ import { AdvertisingExplorer, initAdvertisingCalculator } from "./advertising.js
   };
 
   const setPerspective = (perspective, animate = true) => {
-    if (state.engine === "leaflet") perspective = "2d";
+    if (state.engine === "leaflet" || state.mode === "heatmap") perspective = "2d";
     state.perspective = perspective;
     controls.viewButtons.forEach((button) => {
       button.setAttribute(
@@ -645,7 +680,7 @@ import { AdvertisingExplorer, initAdvertisingCalculator } from "./advertising.js
         String(button.dataset.mapView === perspective),
       );
       if (button.dataset.mapView === "3d") {
-        button.disabled = state.engine === "leaflet";
+        button.disabled = state.engine === "leaflet" || state.mode === "heatmap";
         button.title =
           state.engine === "leaflet" ? message("webglRequired") : "";
       }
@@ -670,6 +705,7 @@ import { AdvertisingExplorer, initAdvertisingCalculator } from "./advertising.js
     controls.play.textContent = t("Play");
     controls.play.setAttribute("aria-pressed", "false");
     controls.play.setAttribute("aria-label", t("Play simulation"));
+    updateReplayNotice();
   };
 
   const renderVehicles = (vehicles) => {
@@ -688,13 +724,16 @@ import { AdvertisingExplorer, initAdvertisingCalculator } from "./advertising.js
     if (!state.frames.length) return;
     const seek = ++seekRequest;
     const target = Math.max(0, Math.min(requestedStep, state.frames.length - 1));
+    traffic?.pin(target);
+    state.seeking=true;updateReplayNotice();
     try {
       if (traffic) await Promise.all([traffic.frame(target), traffic.frame(Math.min(target + 1, state.frames.length - 1))]);
     } catch (error) {
-      if (seek === seekRequest) { stopPlayback(); controls.timeline.value = String(state.step); setStatus(message("dataError")); retryButton.hidden = false; }
+      if (seek === seekRequest) { state.seeking=false;state.error=true;stopPlayback(); controls.timeline.value = String(state.step); setStatus(message("dataError")); retryButton.hidden = false;updateReplayNotice(); }
       return;
     }
     if (seek !== seekRequest) return;
+    state.seeking=false;state.error=false;retryButton.hidden=true;
     pausedFraction = 0;
     state.step = Math.max(0, Math.min(requestedStep, state.frames.length - 1));
     const frame = state.frames[state.step];
@@ -702,6 +741,8 @@ import { AdvertisingExplorer, initAdvertisingCalculator } from "./advertising.js
     renderRecords();
     renderVehicles(frame.vehicles);
     adExplorer?.frame(frame);
+    trafficLayer?.setAdvertisingTime(frame.time);
+    updateReplayNotice();
     controls.timeline.value = String(state.step);
     controls.currentTime.textContent = formatTime(frame.time);
     controls.timeline.setAttribute(
@@ -718,7 +759,7 @@ import { AdvertisingExplorer, initAdvertisingCalculator } from "./advertising.js
   };
 
   const startPlayback = async () => {
-    if (state.loading || state.mode !== "simulation" || !state.frames.length) return;
+    if (state.loading || state.seeking || state.error || state.mode !== "simulation" || !state.frames.length) return;
     stopPlayback();
     const token = playbackToken;
     if (state.step === state.frames.length - 1) await renderStep(0);
@@ -726,6 +767,7 @@ import { AdvertisingExplorer, initAdvertisingCalculator } from "./advertising.js
     controls.play.textContent = t("Pause");
     controls.play.setAttribute("aria-pressed", "true");
     controls.play.setAttribute("aria-label", t("Pause simulation"));
+    updateReplayNotice();
     const speed = Number(controls.speed.value) || 1;
     let started = performance.now() - pausedFraction * 1000 / speed, lastDraw = 0;
     const tick = async (now) => {
@@ -840,9 +882,8 @@ import { AdvertisingExplorer, initAdvertisingCalculator } from "./advertising.js
       ),
     );
     controls.zoneLabel.textContent = zoneName();
-    controls.modeLabel.textContent = t(
-      state.mode === "heatmap" ? "Weighted SUMO samples" : "Play SUMO vehicles",
-    );
+    controls.modeLabel.textContent = i18n.ad(state.mode === "heatmap" ? "densityTab" : "trafficTab");
+    updateReplayNotice();
     controls.inspector.hidden = true;
     document.querySelector("#mapSourceHeat").href = i18n.asset(
       ZONES[state.zone].heatmap,
@@ -863,6 +904,7 @@ import { AdvertisingExplorer, initAdvertisingCalculator } from "./advertising.js
     state.data = null;
     state.frames = [];
     traffic = null;
+    displayedVehicles=[];activeScenes=[];state.seeking=false;
     trafficLayer?.update([]);
     adExplorer?.clear();
     state.exportStats = null;
@@ -904,15 +946,18 @@ import { AdvertisingExplorer, initAdvertisingCalculator } from "./advertising.js
         const manifest = await fetchJSON(state.zone + "_traffic.json");
         const network = await fetchJSON(manifest.network);
         const adSites = await fetchJSON("advertising-sites.json");
+        const scenes = await fetchJSON("active-scenes.json");
         if (request !== state.request) return;
         const readChunk = async (file) => {
           const response = await fetch(i18n.asset(file), { signal: AbortSignal.timeout(45000) });
           if (!response.ok) throw new Error("Traffic chunk unavailable");
           return response.json();
         };
-        traffic = new TrafficReplay(manifest, network, readChunk);
-        await Promise.all([traffic.frame(manifest.initialTime), traffic.frame(manifest.initialTime + 1)]);
+        const candidate = new TrafficReplay(manifest, network, readChunk);
+        candidate.pin(manifest.initialTime);
+        await Promise.all([candidate.frame(manifest.initialTime), candidate.frame(manifest.initialTime + 1)]);
         if (request !== state.request) return;
+        traffic=candidate;activeScenes=scenes.zones[manifest.zone]||[];
         trafficLayer?.setNetwork(manifest);
         updateRoads(network);
         adExplorer?.setSites(adSites.zones[manifest.zone], manifest);
@@ -934,7 +979,7 @@ import { AdvertisingExplorer, initAdvertisingCalculator } from "./advertising.js
           map.getSource("heat-points").setData(toHeatGeoJSON(points));
           map.getSource("vehicles").setData(EMPTY_COLLECTION);
           setLayerVisibility("traffic-heat", true);
-          setLayerVisibility("heat-samples", true);
+          setLayerVisibility("heat-samples", false);
           setLayerVisibility("vehicles", false);
           setRoadVisibility(false);
         } else {
@@ -968,6 +1013,7 @@ import { AdvertisingExplorer, initAdvertisingCalculator } from "./advertising.js
         updateKPIs(data, state.frames[state.step]?.vehicles?.length || 0);
         setPlaybackEnabled(state.frames.length > 0);
         await renderStep(state.step);
+        if(request!==state.request)return;
         focusStreet();
       }
 
@@ -979,7 +1025,7 @@ import { AdvertisingExplorer, initAdvertisingCalculator } from "./advertising.js
             ? message("vectorBase")
             : message("rasterBase");
       const interactionHint =
-        state.engine === "leaflet"
+        state.mode === "heatmap" ? i18n.ad("staticHint") : state.engine === "leaflet"
           ? message("leafletHint")
           : message("maplibreHint");
       setStatus(message("loaded", zoneName(), baseMode, interactionHint));
@@ -1012,6 +1058,7 @@ import { AdvertisingExplorer, initAdvertisingCalculator } from "./advertising.js
     (map.getStyle().layers || []).forEach((layer) => {
       try {
         const id = layer.id.toLowerCase();
+        if(layer.type==="symbol" && /poi|housenumber|transit|road_shield/.test(id))map.setLayoutProperty(layer.id,"visibility","none");
         if (layer.type === "background")
           map.setPaintProperty(layer.id, "background-color", "#0a1b2d");
         if (layer.type === "fill" && id.includes("water"))
@@ -1070,7 +1117,7 @@ import { AdvertisingExplorer, initAdvertisingCalculator } from "./advertising.js
               ["get", "min_height"],
               0,
             ],
-            "fill-extrusion-opacity": 0.76,
+            "fill-extrusion-opacity": 0.24,
           },
         },
         labelLayer?.id,
@@ -1088,7 +1135,7 @@ import { AdvertisingExplorer, initAdvertisingCalculator } from "./advertising.js
       id: "traffic-heat",
       type: "heatmap",
       source: "heat-points",
-      maxzoom: 17,
+      maxzoom: 24,
       paint: {
         "heatmap-weight": ["get", "intensity"],
         "heatmap-intensity": [
@@ -1100,7 +1147,7 @@ import { AdvertisingExplorer, initAdvertisingCalculator } from "./advertising.js
           16,
           2.25,
         ],
-        "heatmap-radius": ["interpolate", ["linear"], ["zoom"], 11, 7, 16, 23],
+        "heatmap-radius": ["interpolate", ["linear"], ["zoom"], 11, 12, 16, 32, 20, 80],
         "heatmap-opacity": 0.76,
         "heatmap-color": [
           "interpolate",
@@ -1125,6 +1172,7 @@ import { AdvertisingExplorer, initAdvertisingCalculator } from "./advertising.js
       type: "circle",
       source: "heat-points",
       minzoom: 15,
+      layout: {visibility: "none"},
       paint: {
         "circle-radius": ["interpolate", ["linear"], ["zoom"], 15, 2.2, 17, 5],
         "circle-color": [
@@ -1197,14 +1245,15 @@ import { AdvertisingExplorer, initAdvertisingCalculator } from "./advertising.js
         ),
       );
     };
-    map.on("click", "heat-samples", inspectDensity);
+    // Raw samples remain accessible in the table, not as point markers.
   };
 
   controls.modeButtons.forEach((button) =>
     button.addEventListener("click", () => {
       if (!mapReady) initialiseMap();
-      if (button.dataset.mapMode === state.mode) return;
+      if (button.dataset.mapMode === state.mode) { if(state.mode==="simulation") {if(mapReady){if(state.error)loadActiveData();else startPlayback();}else state.playWhenReady=true;} return; }
       state.mode = button.dataset.mapMode;
+      if(state.mode === "heatmap")setPerspective("2d",false);
       if (state.mode === "simulation") {
         if (mapReady) setPerspective(state.engine === "maplibre" ? "3d" : "2d");
         else state.perspective = "3d";
@@ -1223,7 +1272,7 @@ import { AdvertisingExplorer, initAdvertisingCalculator } from "./advertising.js
       if (!mapReady) initialiseMap();
       if (button.dataset.mapZone === state.zone) return;
       state.zone = button.dataset.mapZone;
-      state.playWhenReady = state.mode === "simulation";
+      state.playWhenReady = controls.play.getAttribute('aria-pressed') === 'true';
       loadActiveData();
     }),
   );
@@ -1306,6 +1355,7 @@ import { AdvertisingExplorer, initAdvertisingCalculator } from "./advertising.js
         attribution: "&copy; OpenStreetMap contributors",
       }).addTo(leafletMap);
       leafletLayer = Leaflet.layerGroup().addTo(leafletMap);
+      leafletMap.on("moveend",updateReplayNotice);
       adExplorer?.destroy();
       adExplorer = new AdvertisingExplorer({leafletMap});
       leafletMap.on("zoomend", () => vehicleMarkers.forEach(marker => updateLeafletCar(marker, marker.currentVehicle)));
@@ -1352,6 +1402,7 @@ import { AdvertisingExplorer, initAdvertisingCalculator } from "./advertising.js
   const initialiseMap = async () => {
     if (initializing || mapReady) return;
     initializing = true;
+    setBusy(true);setStatus(i18n.ad("loadingScene"));
     if (supportsWebGL2 && !maplibregl) {
       try {
         let engineTimeout;
@@ -1425,7 +1476,8 @@ import { AdvertisingExplorer, initAdvertisingCalculator } from "./advertising.js
             trafficLayer = new Traffic3D(maplibregl);
             map.addLayer(trafficLayer);
             adExplorer?.destroy();
-            adExplorer = new AdvertisingExplorer({map,maplibre:maplibregl,layer:trafficLayer,onFocus:()=>setPerspective("3d",false)});
+            adExplorer = new AdvertisingExplorer({map,maplibre:maplibregl,layer:trafficLayer,onFocus:()=>{}});
+            map.on("moveend",updateReplayNotice);
             bindMapInteractions();
             setPerspective(state.perspective, false);
             mapReady = true;

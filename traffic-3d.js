@@ -1,6 +1,6 @@
 import * as THREE from './three.module.min.js';
 import { paintColours, paintIndex } from './road-motion.js';
-import { createBillboards, disposeBillboards } from './billboard-3d.js';
+import { createBillboards, disposeBillboards, updateBillboardTime } from './billboard-3d.js';
 
 // One shared mesh per part; every car is a lit solid in map coordinates (metres).
 export class Traffic3D {
@@ -19,6 +19,8 @@ export class Traffic3D {
     this.renderer.autoClear = false;
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.createParts(2048);
+    this.onMapMove = () => this.update(this.vehicles);
+    map.on('move', this.onMapMove);
   }
   createParts(capacity) {
     this.disposeParts(); this.capacity = capacity;
@@ -70,10 +72,17 @@ export class Traffic3D {
     if(this.billboards)this.scene.add(this.billboards);
     this.map?.triggerRepaint();
   }
+  setAdvertisingTime(time) { updateBillboardTime(this.billboards,time);this.map?.triggerRepaint(); }
   update(vehicles) {
     if (!this.scene) return;
-    if (vehicles.length > this.capacity) this.createParts(2 ** Math.ceil(Math.log2(vehicles.length)));
     this.vehicles = vehicles;
+    const street = this.map.getZoom() >= 16;
+    if(this.billboards)this.billboards.visible=street;
+    const width=this.map.getCanvas().clientWidth,height=this.map.getCanvas().clientHeight;
+    // Preserve all source observations; submit only cars near the viewport to the GPU.
+    vehicles=street?vehicles.filter(vehicle=>{const p=this.map.project([vehicle.lng,vehicle.lat]);return p.x>-50&&p.x<width+50&&p.y>-50&&p.y<height+50;}):[];
+    this.visibleVehicles=vehicles;
+    if (vehicles.length > this.capacity) this.createParts(2 ** Math.ceil(Math.log2(vehicles.length)));
     for(let i=0;i<vehicles.length;i++) {
       const vehicle=vehicles[i],angle=vehicle.angle*Math.PI/180;
       const sin=Math.sin(angle),cos=Math.cos(angle);
@@ -105,5 +114,5 @@ export class Traffic3D {
     for(const part of this.parts){this.scene.remove(part.mesh);part.mesh.geometry.dispose();materials.add(part.mesh.material);part.mesh.dispose();}
     materials.forEach(material=>material.dispose());this.parts=[];
   }
-  onRemove() {disposeBillboards(this.billboards);this.disposeParts();this.renderer?.dispose();}
+  onRemove() {this.map.off('move',this.onMapMove);disposeBillboards(this.billboards);this.disposeParts();this.renderer?.dispose();}
 }

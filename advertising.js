@@ -1,5 +1,6 @@
 import { calculateAdvertising, defaults, segmentSnapshot } from './advertising-model.js';
 import { toLngLat } from './road-motion.js';
+import { drawCampaign, campaignSlot } from './campaign-art.js';
 
 const i18n=window.PORTFOLIO_I18N, t=key=>i18n.ad(key), number=(n,d=0)=>i18n.number(n,d);
 const money=n=>`${number(n)} ${t('currency')}`;
@@ -39,6 +40,8 @@ export class AdvertisingExplorer {
     this.onFocus=onFocus;this.events=new AbortController();
     this.sites=[];this.markers=[];this.selected='A';this.snapshot=null;
     this.scene=document.querySelector('#adScene');
+    this.onZoom=()=>this.markers.forEach(marker=>{const element=marker.getElement?.();if(element)element.style.visibility=(this.map?.getZoom()??this.leafletMap?.getZoom()??0)>=16?'visible':'hidden';});
+    this.map?.on('zoom',this.onZoom);this.leafletMap?.on('zoomend',this.onZoom);
     this.onButton=event=>{const button=event.target.closest('[data-ad-site]');if(button)this.select(button.dataset.adSite,true);};
     this.scene.addEventListener('click',this.onButton,{signal:this.events.signal});
     document.querySelector('#adExplain').addEventListener('click',async event=>{
@@ -47,7 +50,7 @@ export class AdvertisingExplorer {
       const title=document.querySelector('#adTitle');title.tabIndex=-1;title.focus({preventScroll:true});history.replaceState(null,'','#advertising-value');
     },{signal:this.events.signal});
   }
-  destroy() {this.events.abort();this.clear();}
+  destroy() {this.events.abort();this.map?.off('zoom',this.onZoom);this.leafletMap?.off('zoomend',this.onZoom);this.clear();}
   clear() {
     this.sites=[];this.snapshot=null;this.scene.hidden=true;
     this.markers.forEach(m=>m.remove());this.markers=[];
@@ -61,7 +64,7 @@ export class AdvertisingExplorer {
     for(const site of sites) {
       const coord=toLngLat(...site.position,manifest.origin,manifest.scale);
       const button=document.createElement('button');button.type='button';button.className='di-ad-pin di-ad-pin--'+site.kind;
-      button.textContent=site.id+' · '+site.kind.toUpperCase();button.setAttribute('aria-label',t('open')+' '+site.id+' · '+site.kind.toUpperCase());
+      button.textContent=site.id;button.setAttribute('aria-label',t('open')+' '+site.id+' · '+site.kind.toUpperCase());
       button.addEventListener('click',event=>{event.stopPropagation();this.select(site.id,true);});
       if(this.map) this.markers.push(new this.maplibre.Marker({element:button,anchor:'bottom',offset:[0,-48]}).setLngLat(coord).addTo(this.map));
       else {
@@ -69,7 +72,7 @@ export class AdvertisingExplorer {
         this.markers.push(marker);
       }
     }
-    this.select(this.selected,false);
+    this.onZoom();this.select(this.selected,false);
   }
   select(id,focus) {
     const site=this.sites.find(s=>s.id===id);if(!site)return;this.selected=id;
@@ -83,7 +86,7 @@ export class AdvertisingExplorer {
         this.map.addLayer({id:'ad-segment-line',type:'line',source:'ad-segment',paint:{'line-color':['get','colour'],'line-width':5,'line-opacity':.8,'line-dasharray':[2,2]}} ,'traffic-cars-3d');
       }
       this.map.getSource('ad-segment').setData({type:'FeatureCollection',features:[{type:'Feature',properties:{colour},geometry:{type:'LineString',coordinates}}]});
-      if(focus){this.onFocus?.();this.map.easeTo({center:toLngLat(...site.position,this.manifest.origin,this.manifest.scale),zoom:19,pitch:58,bearing:-18,duration:matchMedia('(prefers-reduced-motion: reduce)').matches?0:650});}
+      if(focus){this.onFocus?.();this.map.easeTo({center:toLngLat(...site.position,this.manifest.origin,this.manifest.scale),zoom:19,pitch:this.map.getPitch(),bearing:this.map.getPitch()>0?site.angle:0,duration:matchMedia('(prefers-reduced-motion: reduce)').matches?0:650});}
     } else {
       if(this.line)this.leafletMap.removeLayer(this.line);
       this.line=window.L.polyline(coordinates.map(([lng,lat])=>[lat,lng]),{color:colour,weight:5,dashArray:'6 6',interactive:false}).addTo(this.leafletMap);
@@ -94,6 +97,10 @@ export class AdvertisingExplorer {
   frame(frame) {this.snapshot=frame;this.updateSnapshot();}
   updateSnapshot() {
     const site=this.sites.find(s=>s.id===this.selected);if(!site)return;
+    const timeValue=this.snapshot?.time||0;
+    drawCampaign(document.querySelector('#adCreative'),site.kind,timeValue);
+    document.querySelector('#adLoopLabel').textContent=site.kind==='ooh'?t('fixedPoster'):t('slotLabel').replace('{slot}',number(campaignSlot(timeValue)+1));
+    document.querySelector('#adLoopNote').hidden=site.kind!=='dooh';
     const target=document.querySelector('#adTraffic');if(!this.snapshot){target.textContent='';return;}
     const info=segmentSnapshot(site,this.snapshot.vehicles);
     const time=new Date(this.snapshot.time*1000).toISOString().slice(14,19);
