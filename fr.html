@@ -582,6 +582,7 @@
           Lecture de scénarios
          </li>
         </ul>
+        <div class="di-ad-intro"><p>Observez les voitures, puis sélectionnez un panneau A ou B pour comprendre son modèle de revenu.</p><button id="adStart" type="button" class="di-map-option">Voir les panneaux en situation →</button></div>
         <div aria-label="Commandes de la carte" class="di-map-panel">
          <span class="di-map-control-label">
           Couche d’analyse
@@ -650,7 +651,7 @@
          </div>
         </div>
         <p class="di-data-note">
-         Résultats SUMO archivés de l’étude OOH/DOOH. Les positions sont échantillonnées toutes les 8 secondes, avec jusqu’à 450 véhicules par image exportée. Les positions répétées ne sont ni des personnes uniques ni des impressions publicitaires mesurées.
+         Lecture des enregistrements SUMO originaux à une seconde et du réseau de voies. Tous les véhicules enregistrés sont conservés. Il s’agit de trafic simulé, pas de circulation observée ni d’impressions publicitaires mesurées.
         </p>
         <details class="di-map-method">
          <summary>
@@ -660,17 +661,17 @@
           La couche utilise les 12 000 échantillons de coordonnées et de poids fournis pour la zone choisie. La formule des poids n’est pas documentée dans l’export. La couleur représente une concentration pondérée et lissée des échantillons, pas un taux de congestion calibré ni un score d’investissement.
          </p>
          <p>
-          La lecture reprend les identifiants, coordonnées, horodatages et vitesses fournis, sans inventer de trajectoires. Les véhicules à l’arrêt restent immobiles. La vitesse moyenne est recalculée pour l’image affichée ; ce n’est pas la moyenne de la simulation complète d’origine.
+          La lecture suit la forme des voies et les connexions des carrefours entre deux observations espacées d’une seconde. Les positions, identifiants, arrêts et vitesses enregistrés sont conservés. Chaque véhicule garde sa couleur ; elle ne représente pas sa vitesse. Le modèle 3D est illustratif. Les changements de voie et le braquage entre deux observations restent reconstruits, sans nouvelle exécution de SUMO.
          </p>
          <p>
-          Le trafic est une composante du mémoire, avec l’audience, les CAPEX/OPEX et la réglementation. L’archive ne contient ni les coordonnées des capteurs, ni la géométrie de visibilité des panneaux, ni les fichiers SUMO originaux du réseau et des itinéraires. Cette carte ne peut donc ni calculer l’exposition publicitaire ni reproduire la simulation complète.
+          Le réseau, les itinéraires et les enregistrements FCD originaux ont été retrouvés dans les fichiers de l’étude. Cette vue relit la simulation archivée ; elle ne relance pas le modèle de trafic. La géométrie de visibilité des panneaux et les mesures d’audience ne sont pas fournies : elle ne calcule donc pas l’exposition publicitaire.
          </p>
          <a download="" href="maarif_heatmap.json" id="mapSourceHeat">
           Télécharger les échantillons pondérés
          </a>
          <br/>
-         <a download="" href="maarif_simulation_geo.json" id="mapSourceSimulation">
-          Télécharger les positions des véhicules
+         <a download="" href="maarif_traffic.json" id="mapSourceSimulation">
+          Télécharger le manifeste et les références des sources
          </a>
         </details>
         <a class="di-text-link" href="pfe-ooh-dooh-casablanca.pdf#page=36" rel="noopener" target="_blank">
@@ -709,10 +710,10 @@
            Vitesse
           </span>
           <select aria-label="Vitesse de lecture" dir="ltr" id="mapPlaybackSpeed">
-           <option value="1">
+           <option selected="" value="1">
             1×
            </option>
-           <option selected="" value="5">
+           <option value="5">
             5×
            </option>
            <option value="10">
@@ -735,6 +736,8 @@
           </span>
          </div>
          <div aria-label="Perspective de la carte" class="di-map-view">
+          <button id="mapStreet" type="button">Vue de rue</button>
+          <button id="mapOverview" type="button">Toute la zone</button>
           <button aria-pressed="false" data-map-view="2d" type="button">
            2D
           </button>
@@ -745,7 +748,13 @@
         </div>
         <div aria-describedby="mapHelp" aria-label="Carte interactive SUMO de Casablanca" dir="ltr" id="case-map" role="region">
         </div>
-        <div aria-live="polite" class="di-map-status" id="mapStatus">
+        <aside class="di-ad-scene" id="adScene" hidden aria-label="Panneaux pédagogiques · emplacements illustratifs">
+ <strong class="di-ad-scene__label">Panneaux pédagogiques · emplacements illustratifs</strong>
+ <div class="di-ad-tabs"><button type="button" data-ad-site="A" aria-pressed="true">A · OOH statique</button><button type="button" data-ad-site="B" aria-pressed="false">B · DOOH numérique</button></div>
+ <p id="adSiteDescription">Une affiche, un annonceur : l’emplacement est loué au mois.</p><p id="adTraffic"></p>
+ <a href="#advertising-value" id="adExplain">Comprendre le CPM et les recettes ↓</a>
+ </aside>
+         <div aria-live="polite" class="di-map-status" id="mapStatus">
          Carte non chargée. Choisissez une couche ou activez JavaScript pour explorer ; les fichiers sources restent accessibles.
         </div>
         <div aria-label="Légende de la carte" class="di-map-legend">
@@ -822,6 +831,15 @@
         </div>
        </details>
       </article>
+      <section id="advertising-value" class="di-ad-study" aria-labelledby="adTitle">
+ <header><p class="di-kicker">DU TRAFIC À LA DÉCISION</p><h3 id="adTitle">Pourquoi simuler des voitures pour choisir un panneau ?</h3><p>Le trafic aide à comparer les conditions d’un emplacement : passages, sens de circulation et ralentissements. La décision d’investissement vient ensuite, en confrontant l’audience publicitaire estimée au prix de vente et aux coûts.</p></header>
+ <ol class="di-ad-steps"><li><span aria-hidden="true">01</span><h4>Observer le trafic</h4><p>SUMO fournit des véhicules, des trajectoires et des vitesses. Le tronçon sélectionné permet de lire ces conditions localement.</p></li><li><span aria-hidden="true">02</span><h4>Estimer l’audience</h4><p>Il faut encore vérifier l’orientation du panneau, les obstacles, la visibilité, les personnes présentes et la durée de diffusion. Une voiture n’est pas une impression.</p></li><li><span aria-hidden="true">03</span><h4>Vendre la publicité</h4><p>Le CPM est le prix pour 1 000 impressions publicitaires. À 55 MAD de CPM, 10 000 impressions facturables représentent 550 MAD de recettes.</p></li><li><span aria-hidden="true">04</span><h4>Tester la rentabilité</h4><p>Des recettes élevées ne suffisent pas : il faut couvrir le loyer, l’énergie, la maintenance et l’investissement initial.</p></li></ol>
+ <h4>Deux supports, deux façons de vendre</h4><div class="di-ad-formats"><article><span class="di-ad-tag">A · OOH statique</span><p>L’affiche reste visible pendant la campagne. Dans le scénario du PFE : 22 500 MAD par mois et 90 % d’occupation, soit 243 000 MAD de recettes annuelles. Après 258 743 MAD de coûts annuels, le solde est de −15 743 MAD.</p></article><article><span class="di-ad-tag di-ad-tag--digital">B · DOOH numérique</span><p>L’écran partage sa boucle entre plusieurs annonceurs. Le PFE retient six créneaux de dix secondes. Les vendre exige de préciser l’audience attribuable à chaque annonce : six créneaux ne donnent pas automatiquement six fois plus de spectateurs.</p><div class="di-ad-slots" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div></article></div>
+ <div class="di-ad-calculator"><div><h4>Et si l’audience ou le prix changeait ?</h4><p>Scénario DOOH pédagogique. Les valeurs initiales viennent du PFE, pp. 93–95 ; l’audience reste une hypothèse indépendante de la carte.</p>
+ <form id="adForm" novalidate><fieldset><legend>À quoi correspond l’audience saisie ?</legend><label class="di-ad-radio"><input type="radio" name="basis" value="screen" checked>À l’écran entier, répartie entre les créneaux</label><label class="di-ad-radio"><input type="radio" name="basis" value="slot">À chaque créneau — lecture du calcul du PFE</label></fieldset><p id="adBasisNote">Répartition pédagogique à parts égales : les créneaux partagent une audience totale fixe. Ajouter des créneaux ne multiplie pas cette audience.</p><div class="di-ad-inputs"><label for="ad-impressions">Impressions hypothétiques / mois<input id="ad-impressions" name="impressions" type="number" min="0" max="100000000" step="any" value="300000" required dir="ltr"></label><label for="ad-cpm">CPM de vente (MAD / 1 000 impressions)<input id="ad-cpm" name="cpm" type="number" min="0" max="10000" step="any" value="55" required dir="ltr"></label><label for="ad-fill">Remplissage commercial (%)<input id="ad-fill" name="fill" type="number" min="0" max="100" step="any" value="70" required dir="ltr"></label><label for="ad-slots">Créneaux de même durée<input id="ad-slots" name="slots" type="number" min="1" max="12" step="1" value="6" required dir="ltr"></label><label for="ad-opex">Coûts d’exploitation / an (MAD)<input id="ad-opex" name="opex" type="number" min="0" max="100000000" step="any" value="300167" required dir="ltr"></label><label for="ad-capex">Investissement initial (MAD)<input id="ad-capex" name="capex" type="number" min="0" max="100000000" step="any" value="150000" required dir="ltr"></label></div><button type="reset" class="di-map-option">Rétablir les hypothèses initiales</button><p id="adError" role="alert" hidden></p></form></div>
+ <div class="di-ad-results" aria-live="polite" aria-atomic="true"><p id="adPerSlot"></p><dl><div><dt>Recettes annuelles estimées</dt><dd id="ad-result-annual">—</dd></div><div><dt>Solde annuel après exploitation</dt><dd id="ad-result-operating">—</dd></div><div><dt>Solde cumulé sur 5 ans, investissement déduit</dt><dd id="ad-result-fiveYear">—</dd></div><div><dt>Impressions mensuelles pour couvrir l’exploitation</dt><dd id="ad-result-breakEven">—</dd></div></dl><p id="adVerdict"></p><p class="di-ad-equation">Recettes = impressions ÷ 1 000 × CPM × remplissage × 12<span id="adMultiplier" hidden> × nombre de créneaux, uniquement avec une audience par créneau</span></p><p class="di-data-note">Calcul simplifié à hypothèses constantes, sans actualisation, financement ni fiscalité supplémentaire. Ce solde n’est pas un bénéfice net comptable ni un rendement observé.</p></div></div>
+ <details class="di-ad-sources"><summary>Sources et choix de calcul</summary><p>Le tableau 27 (p. 93) fournit les coûts ; les pp. 94–95 fournissent les recettes et les hypothèses. Le PFE obtient 831 600 MAD/an avec 300 000 impressions mensuelles × 6 créneaux, un CPM de 55 MAD et 70 % de remplissage. La base d’audience n’y est pas explicitée : le mode par créneau reproduit ce résultat, le mode écran répartit le total une seule fois. Les variantes de coûts et les incohérences du ROI plus loin dans le mémoire ne sont pas reprises dans ce calcul.</p><p>Les panneaux 4 × 3 m et leurs emplacements servent à expliquer la méthode. Ce ne sont ni des panneaux recensés, ni des sites autorisés ou recommandés. Les tronçons ne modélisent pas la visibilité réelle. Le scénario financier reste identique entre les zones tant que ses hypothèses ne sont pas modifiées.</p><div><a href="pfe-ooh-dooh-casablanca.pdf#page=36" target="_blank" rel="noopener">Trafic : méthode SUMO, pp. 36–38</a><a href="pfe-ooh-dooh-casablanca.pdf#page=93" target="_blank" rel="noopener">Coûts : tableau 27, p. 93</a><a href="pfe-ooh-dooh-casablanca.pdf#page=94" target="_blank" rel="noopener">Audience, CPM et recettes, pp. 94–95</a></div></details>
+ <p class="di-ad-lesson">La plus-value : relier une lecture du trafic à une décision économique testable, puis identifier les données terrain manquantes avant d’investir.</p></section>
       <article class="di-case-card" id="ooh-dooh">
        <span class="di-case-index">
         03 / Évaluation d’investissement

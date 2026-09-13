@@ -1,10 +1,13 @@
-import { carClass, createCarSprites, interpolateVehicles } from "./vehicle-renderer.js";
+import { createCarSprites } from "./vehicle-renderer.js";
+import { TrafficReplay, paintIndex, toLngLat } from "./road-motion.js";
+import { AdvertisingExplorer, initAdvertisingCalculator } from "./advertising.js";
 
 (async () => {
   const i18n = window.PORTFOLIO_I18N;
   const t = (source) => i18n?.t(source) || source;
   const message = (key, ...values) => i18n?.message(key, ...values) || "";
   const mobility = window.PORTFOLIO_DATA;
+  initAdvertisingCalculator();
 
   const supportsWebGL2 = (() => {
     try {
@@ -304,6 +307,14 @@ import { carClass, createCarSprites, interpolateVehicles } from "./vehicle-rende
   let leafletHeat;
   const vehicleMarkers = new Map();
   const carSprites = createCarSprites();
+  let traffic = null;
+  let trafficLayer = null;
+  let adExplorer = null;
+  let seekRequest = 0;
+  let playbackToken = 0;
+  let displayedVehicles = [];
+  let streetCameraTarget = null;
+  let pausedFraction = 0;
   let mapReady = false;
   if ("ResizeObserver" in window) {
     new window.ResizeObserver(() => {
@@ -462,7 +473,7 @@ import { carClass, createCarSprites, interpolateVehicles } from "./vehicle-rende
         id: String(vehicle.id),
         speed: Number(vehicle.speed) || 0,
         angle: Number(vehicle.angle) || 0,
-        car: "car-" + carClass(vehicle.speed),
+        car: "car-" + paintIndex(vehicle.id),
         state: String(vehicle.state || "unknown"),
       },
     })),
@@ -492,6 +503,12 @@ import { carClass, createCarSprites, interpolateVehicles } from "./vehicle-rende
     controls.inspectorBody.textContent = body;
     controls.inspector.hidden = false;
   };
+  const inspectVehicle = (id) => {
+    const frame = state.frames[state.step];
+    const vehicle = frame?.vehicles.find(vehicle => String(vehicle.id) === String(id));
+    if (!vehicle) return;
+    showInspector(message("vehicleTitle", vehicle.id), message("vehicleBody", i18n.number(vehicle.speed * 3.6), vehicle.state, formatTime(frame.time)));
+  };
 
   const renderLeafletHeat = (points = []) => {
     if (!leafletMap || !leafletLayer || !window.L) return;
@@ -517,8 +534,9 @@ import { carClass, createCarSprites, interpolateVehicles } from "./vehicle-rende
   const updateLeafletCar = (marker, vehicle) => {
     const sprite = marker.getElement()?.firstElementChild;
     if (!sprite) return;
-    const scale = Math.max(0.4, Math.min(1.2, 0.4 + (leafletMap.getZoom() - 12) * 0.13));
-    sprite.style.backgroundImage = `url("${carSprites[carClass(vehicle.speed)].url}")`;
+    const metresPerPixel = 156543.03392 * Math.cos(vehicle.lat * Math.PI / 180) / 2 ** leafletMap.getZoom();
+    const scale = Math.max(0.06, 5 / metresPerPixel / 38);
+    sprite.style.backgroundImage = `url("${carSprites[paintIndex(vehicle.id)].url}")`;
     sprite.style.transform = `rotate(${Number(vehicle.angle) || 0}deg) scale(${scale})`;
   };
 
@@ -556,17 +574,7 @@ import { carClass, createCarSprites, interpolateVehicles } from "./vehicle-rende
         riseOnHover: true,
       });
       marker.currentVehicle = vehicle;
-      marker.on("click", () =>
-        showInspector(
-          message("vehicleTitle", String(vehicle.id)),
-          message(
-            "vehicleBody",
-            i18n.number(Number(marker.currentVehicle.speed)),
-            i18n.vehicleState(String(marker.currentVehicle.state || "unknown")),
-            formatTime(state.frames[state.step]?.time),
-          ),
-        ),
-      );
+      marker.on("click", () => inspectVehicle(id));
       marker.addTo(leafletLayer);
       marker.getElement().setAttribute("role", "button");
       marker.getElement().setAttribute("aria-label", message("vehicleTitle", id));
@@ -581,6 +589,46 @@ import { carClass, createCarSprites, interpolateVehicles } from "./vehicle-rende
       vehicleMarkers.set(id, marker);
     });
   };
+
+  let leafletRoads = null;
+  const setRoadVisibility = (visible) => {
+    ["sumo-road-surface", "sumo-road-edge"].forEach(id => setLayerVisibility(id, visible));
+    if (leafletRoads && leafletMap) {
+      if (visible && !leafletMap.hasLayer(leafletRoads)) leafletRoads.addTo(leafletMap);
+      if (!visible && leafletMap.hasLayer(leafletRoads)) leafletMap.removeLayer(leafletRoads);
+    }
+  };
+  const updateRoads = (network) => {
+    const features = network.lanes.filter(lane => lane && lane.driveable !== false).map(lane => ({
+      type: "Feature", properties: { width: lane.width, internal: lane.internal },
+      geometry: { type: "LineString", coordinates: lane.shape.map(([x,y]) => toLngLat(x,y,network.origin,network.scale)) },
+    }));
+    const geojson = { type: "FeatureCollection", features };
+    if (map) {
+      map.getSource("sumo-roads").setData(geojson);
+    } else if (leafletMap) {
+      if (leafletRoads) leafletMap.removeLayer(leafletRoads);
+      leafletRoads = window.L.geoJSON(geojson, { interactive: false, style: { color: "#536777", weight: 2, opacity: .35 } }).addTo(leafletMap);
+    }
+  };
+  const focusStreet = () => {
+    const focus = state.data?.focus;
+    if (!focus) return;
+    if (map) {
+      map.stop();
+      streetCameraTarget = { center: focus, zoom: window.innerWidth < 760 ? 18.8 : 18.6 };
+      map.easeTo({ ...streetCameraTarget, pitch: state.perspective === "3d" ? 58 : 0, bearing: -18, duration: prefersReducedMotion ? 0 : 850 });
+      map.once("moveend", () => { streetCameraTarget = null; });
+    }
+    else leafletMap?.setView([focus[1],focus[0]],18,{ animate: !prefersReducedMotion });
+  };
+  document.querySelector("#mapStreet")?.addEventListener("click", focusStreet);
+  document.querySelector("#adStart")?.addEventListener("click", () => {
+    if(state.mode !== "simulation" || !mapReady) document.querySelector('[data-map-mode="simulation"]').click();
+    else adExplorer?.select(adExplorer.selected,true);
+    mapContainer.scrollIntoView({block:"center"});
+  });
+  document.querySelector("#mapOverview")?.addEventListener("click", () => focusBounds(state.data?.bounds || getBounds(state.data?.points || [])));
 
   const setLayerVisibility = (id, visible) => {
     if (state.engine === "maplibre" && map?.getLayer(id)) {
@@ -604,6 +652,7 @@ import { carClass, createCarSprites, interpolateVehicles } from "./vehicle-rende
     });
     if (state.engine === "maplibre" && map) {
       const camera = {
+        ...(streetCameraTarget || {}),
         pitch: perspective === "3d" ? 58 : 0,
         bearing: perspective === "3d" ? -18 : 0,
       };
@@ -616,31 +665,43 @@ import { carClass, createCarSprites, interpolateVehicles } from "./vehicle-rende
 
   const stopPlayback = () => {
     if (state.timer !== null) window.cancelAnimationFrame(state.timer);
-    const wasPlaying = state.timer !== null;
     state.timer = null;
-    if (wasPlaying && state.frames.length) renderVehicles(state.frames[state.step].vehicles);
+    playbackToken++;
     controls.play.textContent = t("Play");
     controls.play.setAttribute("aria-pressed", "false");
     controls.play.setAttribute("aria-label", t("Play simulation"));
   };
 
   const renderVehicles = (vehicles) => {
+    displayedVehicles = vehicles;
+    trafficLayer?.update(state.mode === "simulation" ? vehicles : []);
     if (state.engine === "maplibre") {
       const vehicleSource = map?.getSource("vehicles");
       if (!vehicleSource) return;
-      vehicleSource.setData(toVehicleGeoJSON(vehicles));
+      if (!trafficLayer) vehicleSource.setData(toVehicleGeoJSON(vehicles));
     } else {
       renderLeafletVehicles(vehicles);
     }
   };
 
-  const renderStep = (requestedStep) => {
+  const renderStep = async (requestedStep) => {
     if (!state.frames.length) return;
+    const seek = ++seekRequest;
+    const target = Math.max(0, Math.min(requestedStep, state.frames.length - 1));
+    try {
+      if (traffic) await Promise.all([traffic.frame(target), traffic.frame(Math.min(target + 1, state.frames.length - 1))]);
+    } catch (error) {
+      if (seek === seekRequest) { stopPlayback(); controls.timeline.value = String(state.step); setStatus(message("dataError")); retryButton.hidden = false; }
+      return;
+    }
+    if (seek !== seekRequest) return;
+    pausedFraction = 0;
     state.step = Math.max(0, Math.min(requestedStep, state.frames.length - 1));
     const frame = state.frames[state.step];
     recordPage = 0;
     renderRecords();
     renderVehicles(frame.vehicles);
+    adExplorer?.frame(frame);
     controls.timeline.value = String(state.step);
     controls.currentTime.textContent = formatTime(frame.time);
     controls.timeline.setAttribute(
@@ -653,38 +714,37 @@ import { carClass, createCarSprites, interpolateVehicles } from "./vehicle-rende
     controls.kpiPointsLabel.textContent = t("Vehicles this step");
     const stats = mobility.frameStats(frame.vehicles);
     controls.kpiSpeed.textContent =
-      stats.meanSpeed === null ? "—" : i18n.number(stats.meanSpeed) + " m/s";
+      stats.meanSpeed === null ? "—" : i18n.number(stats.meanSpeed * 3.6) + " km/h";
   };
 
-  const startPlayback = () => {
-    if (state.loading || state.mode !== "simulation" || !state.frames.length)
-      return;
-    if (state.step === state.frames.length - 1) renderStep(0);
+  const startPlayback = async () => {
+    if (state.loading || state.mode !== "simulation" || !state.frames.length) return;
     stopPlayback();
+    const token = playbackToken;
+    if (state.step === state.frames.length - 1) await renderStep(0);
+    if (token !== playbackToken) return;
     controls.play.textContent = t("Pause");
     controls.play.setAttribute("aria-pressed", "true");
     controls.play.setAttribute("aria-label", t("Pause simulation"));
-    const playbackSpeed = Number(controls.speed.value) || 5;
-    let startedAt = performance.now();
-    let lastDraw = 0;
-    const tick = (now) => {
-      const frame = state.frames[state.step];
-      const next = state.frames[state.step + 1];
+    const speed = Number(controls.speed.value) || 1;
+    let started = performance.now() - pausedFraction * 1000 / speed, lastDraw = 0;
+    const tick = async (now) => {
+      if (token !== playbackToken) return;
+      const frame = state.frames[state.step], next = state.frames[state.step + 1];
       if (!next) { stopPlayback(); return; }
-      const duration = ((next.time - frame.time) * 1000) / playbackSpeed;
-      const progress = Math.min(1, (now - startedAt) / duration);
-      if (progress >= 1) {
-        renderStep(state.step + 1);
-        startedAt = now;
+      const fraction = Math.min(1, (now - started) * speed / 1000);
+      if (fraction >= 1) {
+        await renderStep(state.step + 1);
+        if (token !== playbackToken) return;
+        started = performance.now();
         if (state.step === state.frames.length - 1) { stopPlayback(); return; }
       } else if (!prefersReducedMotion && now - lastDraw >= 1000 / 30) {
-        // The export is sampled; this is a visual approximation between positions.
-        renderVehicles(interpolateVehicles(frame.vehicles, next.vehicles, progress));
-        lastDraw = now;
+        pausedFraction = fraction;
+        renderVehicles(traffic.between(frame, next, fraction)); lastDraw = now;
       }
-      state.timer = window.requestAnimationFrame(tick);
+      if (token === playbackToken) state.timer = requestAnimationFrame(tick);
     };
-    state.timer = window.requestAnimationFrame(tick);
+    state.timer = requestAnimationFrame(tick);
   };
 
   const setPlaybackEnabled = (enabled) => {
@@ -713,7 +773,7 @@ import { carClass, createCarSprites, interpolateVehicles } from "./vehicle-rende
         ? mobility.frameStats(state.frames[state.step]?.vehicles || [])
         : null;
     controls.kpiSpeed.textContent =
-      stats?.meanSpeed != null ? i18n.number(stats.meanSpeed) + " m/s" : "—";
+      stats?.meanSpeed != null ? i18n.number(stats.meanSpeed * 3.6) + " km/h" : "—";
     controls.kpiSteps.textContent =
       state.mode === "simulation"
         ? numberFormatter.format(state.frames.length)
@@ -788,19 +848,23 @@ import { carClass, createCarSprites, interpolateVehicles } from "./vehicle-rende
       ZONES[state.zone].heatmap,
     );
     document.querySelector("#mapSourceSimulation").href = i18n.asset(
-      ZONES[state.zone].simulation,
+      state.zone + "_traffic.json",
     );
   };
 
   const loadActiveData = async () => {
     updateControls();
     if (!mapReady) return;
+    seekRequest++;
     const request = ++state.request;
     const zone = ZONES[state.zone];
     const path = state.mode === "heatmap" ? zone.heatmap : zone.simulation;
     setPlaybackEnabled(false);
     state.data = null;
     state.frames = [];
+    traffic = null;
+    trafficLayer?.update([]);
+    adExplorer?.clear();
     state.exportStats = null;
     recordPage = 0;
     renderRecords();
@@ -819,9 +883,11 @@ import { carClass, createCarSprites, interpolateVehicles } from "./vehicle-rende
         leafletMap.removeLayer(leafletHeat);
         leafletHeat = null;
       }
+      if (leafletRoads) leafletMap.removeLayer(leafletRoads);
     } else {
       map.getSource("heat-points")?.setData(EMPTY_COLLECTION);
       map.getSource("vehicles")?.setData(EMPTY_COLLECTION);
+      setRoadVisibility(false);
     }
     state.error = false;
     retryButton.hidden = true;
@@ -833,11 +899,29 @@ import { carClass, createCarSprites, interpolateVehicles } from "./vehicle-rende
       ),
     );
     try {
-      const data = await fetchJSON(path);
+      let data;
+      if (state.mode === "simulation") {
+        const manifest = await fetchJSON(state.zone + "_traffic.json");
+        const network = await fetchJSON(manifest.network);
+        const adSites = await fetchJSON("advertising-sites.json");
+        if (request !== state.request) return;
+        const readChunk = async (file) => {
+          const response = await fetch(i18n.asset(file), { signal: AbortSignal.timeout(45000) });
+          if (!response.ok) throw new Error("Traffic chunk unavailable");
+          return response.json();
+        };
+        traffic = new TrafficReplay(manifest, network, readChunk);
+        await Promise.all([traffic.frame(manifest.initialTime), traffic.frame(manifest.initialTime + 1)]);
+        if (request !== state.request) return;
+        trafficLayer?.setNetwork(manifest);
+        updateRoads(network);
+        adExplorer?.setSites(adSites.zones[manifest.zone], manifest);
+        data = { ...manifest, timesteps: traffic.frames };
+      } else data = await fetchJSON(path);
       if (request !== state.request) return;
       if (data.zone !== state.zone)
         throw new Error("Export zone does not match selected zone");
-      state.exportStats = mobility.validate(data, state.mode);
+      state.exportStats = state.mode === "simulation" ? { records: data.records, frames: data.timesteps.length } : mobility.validate(data, state.mode);
       state.data = data;
       if (state.engine === "leaflet") {
         leafletLayer.clearLayers();
@@ -852,6 +936,7 @@ import { carClass, createCarSprites, interpolateVehicles } from "./vehicle-rende
           setLayerVisibility("traffic-heat", true);
           setLayerVisibility("heat-samples", true);
           setLayerVisibility("vehicles", false);
+          setRoadVisibility(false);
         } else {
           renderLeafletHeat(points);
         }
@@ -867,12 +952,13 @@ import { carClass, createCarSprites, interpolateVehicles } from "./vehicle-rende
         focusBounds(getBounds(points));
       } else {
         state.frames = data.timesteps || [];
-        state.step = 0;
+        state.step = data.initialTime || 0;
         if (state.engine === "maplibre") {
           map.getSource("heat-points").setData(EMPTY_COLLECTION);
           setLayerVisibility("traffic-heat", false);
           setLayerVisibility("heat-samples", false);
-          setLayerVisibility("vehicles", true);
+          setLayerVisibility("vehicles", !trafficLayer);
+          setRoadVisibility(true);
         }
         controls.timeline.max = String(Math.max(0, state.frames.length - 1));
         controls.totalTime.textContent = formatTime(
@@ -881,8 +967,8 @@ import { carClass, createCarSprites, interpolateVehicles } from "./vehicle-rende
         controls.legend.textContent = message("vehicleLegend");
         updateKPIs(data, state.frames[state.step]?.vehicles?.length || 0);
         setPlaybackEnabled(state.frames.length > 0);
-        renderStep(state.step);
-        focusBounds(simulationBounds(data));
+        await renderStep(state.step);
+        focusStreet();
       }
 
       renderRecords();
@@ -1088,18 +1174,15 @@ import { carClass, createCarSprites, interpolateVehicles } from "./vehicle-rende
       });
     });
 
-    map.on("click", "vehicles", (event) => {
-      const properties = event.features?.[0]?.properties;
-      if (!properties) return;
-      showInspector(
-        message("vehicleTitle", properties.id),
-        message(
-          "vehicleBody",
-          i18n.number(Number(properties.speed)),
-          i18n.vehicleState(properties.state),
-          formatTime(state.frames[state.step]?.time),
-        ),
-      );
+    map.on("click", (event) => {
+      if (state.mode !== "simulation" || !displayedVehicles.length) return;
+      let closest = null, distance = 400;
+      for (const vehicle of displayedVehicles) {
+        const point = map.project([vehicle.lng,vehicle.lat]);
+        const d = (point.x-event.point.x)**2 + (point.y-event.point.y)**2;
+        if (d < distance) { closest = vehicle; distance = d; }
+      }
+      if (closest) inspectVehicle(closest.id);
     });
 
     const inspectDensity = (event) => {
@@ -1122,7 +1205,10 @@ import { carClass, createCarSprites, interpolateVehicles } from "./vehicle-rende
       if (!mapReady) initialiseMap();
       if (button.dataset.mapMode === state.mode) return;
       state.mode = button.dataset.mapMode;
-      if (state.mode === "simulation") setPerspective("2d");
+      if (state.mode === "simulation") {
+        if (mapReady) setPerspective(state.engine === "maplibre" ? "3d" : "2d");
+        else state.perspective = "3d";
+      }
       state.playWhenReady = state.mode === "simulation";
       mapContainer.parentElement.scrollIntoView?.({
         block: "start",
@@ -1183,6 +1269,7 @@ import { carClass, createCarSprites, interpolateVehicles } from "./vehicle-rende
     state.basemap = "raster";
     state.perspective = "2d";
     map?.remove();
+    trafficLayer = null;
     map = undefined;
     leafletMap?.remove();
     leafletMap = undefined;
@@ -1219,6 +1306,8 @@ import { carClass, createCarSprites, interpolateVehicles } from "./vehicle-rende
         attribution: "&copy; OpenStreetMap contributors",
       }).addTo(leafletMap);
       leafletLayer = Leaflet.layerGroup().addTo(leafletMap);
+      adExplorer?.destroy();
+      adExplorer = new AdvertisingExplorer({leafletMap});
       leafletMap.on("zoomend", () => vehicleMarkers.forEach(marker => updateLeafletCar(marker, marker.currentVehicle)));
       leafletMap.on("click", (event) => {
         if (state.mode !== "heatmap" || !state.data) return;
@@ -1290,6 +1379,7 @@ import { carClass, createCarSprites, interpolateVehicles } from "./vehicle-rende
       return;
     }
     try {
+      const { Traffic3D } = await import("./traffic-3d.js");
       const style = await resolveStyle();
       map = new maplibregl.Map({
         container: mapContainer,
@@ -1307,7 +1397,7 @@ import { carClass, createCarSprites, interpolateVehicles } from "./vehicle-rende
         new maplibregl.NavigationControl({ visualizePitch: true }),
         "top-right",
       );
-      map.addControl(new maplibregl.FullscreenControl(), "top-right");
+      map.addControl(new maplibregl.FullscreenControl({ container: mapContainer.parentElement }), "top-right");
       map.addControl(
         new maplibregl.ScaleControl({ unit: "metric" }),
         "bottom-left",
@@ -1327,6 +1417,15 @@ import { carClass, createCarSprites, interpolateVehicles } from "./vehicle-rende
             themeBaseMap();
             addCityBuildings();
             addProjectLayers();
+            map.addSource("sumo-roads", { type: "geojson", data: EMPTY_COLLECTION });
+            const roadWidth = ["interpolate",["exponential",2],["zoom"],14,["*",["get","width"],0.126],20,["*",["get","width"],8.08]];
+            const before = map.getLayer("city-buildings-3d") ? "city-buildings-3d" : "vehicles";
+            map.addLayer({id:"sumo-road-edge",type:"line",source:"sumo-roads",minzoom:16,layout:{visibility:"none","line-join":"round","line-cap":"round"},paint:{"line-color":"#6c7b83","line-width":["interpolate",["exponential",2],["zoom"],14,["*",["+",["get","width"],.35],.126],20,["*",["+",["get","width"],.35],8.08]]}},before);
+            map.addLayer({id:"sumo-road-surface",type:"line",source:"sumo-roads",minzoom:16,layout:{visibility:"none","line-join":"round","line-cap":"round"},paint:{"line-color":"#344551","line-width":roadWidth}},before);
+            trafficLayer = new Traffic3D(maplibregl);
+            map.addLayer(trafficLayer);
+            adExplorer?.destroy();
+            adExplorer = new AdvertisingExplorer({map,maplibre:maplibregl,layer:trafficLayer,onFocus:()=>setPerspective("3d",false)});
             bindMapInteractions();
             setPerspective(state.perspective, false);
             mapReady = true;

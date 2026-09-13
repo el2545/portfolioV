@@ -665,7 +665,7 @@
           إعادة تشغيل السيناريوهات
          </li>
         </ul>
-        <div aria-label="عناصر التحكم في الخريطة" class="di-map-panel">
+        <div class="di-ad-intro"><p>شاهد السيارات ثم اختر اللوحة A أو B لفهم نموذج إيرادها.</p><button id="adStart" type="button" class="di-map-option">عرض اللوحات بجانب الطريق →</button></div><div aria-label="عناصر التحكم في الخريطة" class="di-map-panel">
          <span class="di-map-control-label">
           طبقة التحليل
          </span>
@@ -740,15 +740,7 @@
          </div>
         </div>
         <p class="di-data-note">
-         مخرجات
-         <bdi dir="ltr">
-          SUMO
-         </bdi>
-         مؤرشفة من دراسة
-         <bdi dir="ltr">
-          OOH/DOOH
-         </bdi>
-         . أُخذت عينات المواقع كل 8 ثوانٍ، بما يصل إلى 450 مركبة في كل إطار مصدّر. المواقع المتكررة لا تمثل مشاهدين فريدين أو مرات ظهور إعلانية مقاسة.
+         إعادة تشغيل تسجيلات SUMO الأصلية بفاصل ثانية واحدة باستخدام شبكة المسارات الأصلية، مع الاحتفاظ بجميع المركبات المسجلة. هذه حركة مرور محاكاة وليست قياسات ميدانية أو مرات ظهور إعلانية مقاسة.
         </p>
         <details class="di-map-method">
          <summary>
@@ -758,25 +750,17 @@
           تستخدم الطبقة جميع عينات الإحداثيات والأوزان البالغ عددها 12,000 للمنطقة المختارة. لا يوثّق ملف التصدير معادلة الأوزان. يشير اللون إلى تركّز موزون ومُنعّم للعينات، وليس إلى معدل ازدحام مُعاير أو درجة استثمار.
          </p>
          <p>
-          يستخدم التشغيل المعرّفات والإحداثيات والأوقات والسرعات المرفقة دون اختلاق مسارات. تبقى المركبات المتوقفة ثابتة. يُعاد حساب متوسط السرعة للإطار المعروض؛ وهو ليس متوسط المحاكاة الأصلية الكاملة.
+          تتبع المركبات أشكال المسارات ووصلات التقاطعات بين تسجيلين بفاصل ثانية واحدة. تُحفظ المواقع والمعرّفات والتوقفات والسرعات المسجلة. تحتفظ كل مركبة بلون ثابت لا يعبّر عن سرعتها. نموذج السيارة ثلاثي الأبعاد توضيحي. تغيير المسار وتوجيه العجلات بين التسجيلات إعادة بناء بصرية وليسا تشغيلاً جديداً لبرنامج SUMO.
          </p>
          <p>
-          المرور أحد مدخلات البحث إلى جانب الجمهور و
-          <bdi dir="ltr">
-           CAPEX/OPEX
-          </bdi>
-          والتنظيم. لا يتضمن الأرشيف إحداثيات الكواشف أو هندسة رؤية اللوحات أو ملفات شبكة
-          <bdi dir="ltr">
-           SUMO
-          </bdi>
-          ومساراتها الأصلية. لذلك لا يمكن لهذه الخريطة حساب التعرّض الإعلاني أو إعادة إنتاج المحاكاة الكاملة.
+          تم العثور على شبكة SUMO ومسارات الرحلات وتسجيلات FCD الأصلية ضمن ملفات الدراسة. يعيد هذا العرض تشغيل المحاكاة المؤرشفة ولا يعيد حساب نموذج المرور. لا تتوفر هندسة رؤية اللوحات وقياسات الجمهور، لذلك لا يحسب التعرض الإعلاني.
          </p>
          <a download="" href="maarif_heatmap.json" id="mapSourceHeat">
           تنزيل العينات الموزونة
          </a>
          <br/>
-         <a download="" href="maarif_simulation_geo.json" id="mapSourceSimulation">
-          تنزيل سجلات المركبات
+         <a download="" href="maarif_traffic.json" id="mapSourceSimulation">
+          تنزيل فهرس التشغيل ومراجع المصادر
          </a>
         </details>
         <a class="di-text-link" href="pfe-ooh-dooh-casablanca.pdf#page=36" rel="noopener" target="_blank">
@@ -823,10 +807,10 @@
            السرعة
           </span>
           <select aria-label="سرعة التشغيل" dir="ltr" id="mapPlaybackSpeed">
-           <option value="1">
+           <option selected="" value="1">
             1×
            </option>
-           <option selected="" value="5">
+           <option value="5">
             5×
            </option>
            <option value="10">
@@ -853,6 +837,8 @@
           </span>
          </div>
          <div aria-label="منظور الخريطة" class="di-map-view">
+          <button id="mapStreet" type="button">عرض الشارع</button>
+          <button id="mapOverview" type="button">المنطقة كاملة</button>
           <button aria-pressed="false" data-map-view="2d" type="button">
            <bdi dir="ltr">
             2D
@@ -867,7 +853,13 @@
         </div>
         <div aria-describedby="mapHelp" aria-label="خريطة SUMO التفاعلية للدار البيضاء" dir="ltr" id="case-map" role="region">
         </div>
-        <div aria-live="polite" class="di-map-status" id="mapStatus">
+        <aside class="di-ad-scene" id="adScene" hidden aria-label="لوحات تعليمية · مواقع توضيحية">
+ <strong class="di-ad-scene__label">لوحات تعليمية · مواقع توضيحية</strong>
+ <div class="di-ad-tabs"><button type="button" data-ad-site="A" aria-pressed="true">A · لوحة OOH ثابتة</button><button type="button" data-ad-site="B" aria-pressed="false">B · شاشة DOOH رقمية</button></div>
+ <p id="adSiteDescription">ملصق واحد ومعلن واحد: يؤجّر الموقع شهرياً.</p><p id="adTraffic"></p>
+ <a href="#advertising-value" id="adExplain">فهم CPM والإيرادات ↓</a>
+ </aside>
+         <div aria-live="polite" class="di-map-status" id="mapStatus">
          لم تُحمّل الخريطة. اختر طبقة أو فعّل
          <bdi dir="ltr">
           JavaScript
@@ -948,6 +940,15 @@
         </div>
        </details>
       </article>
+      <section id="advertising-value" class="di-ad-study" aria-labelledby="adTitle">
+ <header><p class="di-kicker">من حركة المرور إلى القرار</p><h3 id="adTitle">لماذا نحاكي السيارات لاختيار لوحة إعلانية؟</h3><p>تساعد حركة المرور على مقارنة ظروف المواقع: مرور المركبات واتجاهاتها وتباطؤها. ثم يأتي قرار الاستثمار بمقارنة الجمهور الإعلاني المقدّر بأسعار البيع والتكاليف.</p></header>
+ <ol class="di-ad-steps"><li><span aria-hidden="true">01</span><h4>ملاحظة حركة المرور</h4><p>توفر SUMO المركبات والمسارات والسرعات. يوضح مقطع الطريق المحدد هذه الظروف محلياً.</p></li><li><span aria-hidden="true">02</span><h4>تقدير الجمهور</h4><p>يجب التحقق من اتجاه اللوحة والعوائق والرؤية وعدد الأشخاص ومدة العرض. السيارة الواحدة لا تعادل ظهوراً إعلانياً واحداً.</p></li><li><span aria-hidden="true">03</span><h4>بيع الإعلان</h4><p>CPM هو السعر لكل ألف ظهور إعلاني. عند سعر 55 درهماً للألف، تمثل 10 آلاف مشاهدة قابلة للفوترة إيراداً قدره 550 درهماً.</p></li><li><span aria-hidden="true">04</span><h4>اختبار الربحية</h4><p>الإيراد المرتفع وحده لا يكفي: يجب تغطية الإيجار والطاقة والصيانة والاستثمار الأولي.</p></li></ol>
+ <h4>وسيلتان ونموذجان للبيع</h4><div class="di-ad-formats"><article><span class="di-ad-tag">A · لوحة OOH ثابتة</span><p>يبقى الملصق معروضاً طوال الحملة. يفترض البحث 22,500 درهم شهرياً وإشغالاً بنسبة 90%، أي 243,000 درهم إيراداً سنوياً. بعد تكاليف سنوية قدرها 258,743 درهماً، يكون الرصيد −15,743 درهماً.</p></article><article><span class="di-ad-tag di-ad-tag--digital">B · شاشة DOOH رقمية</span><p>تتقاسم الإعلانات حلقة العرض على الشاشة. يفترض البحث ست فترات، مدة كل منها عشر ثوانٍ. يتطلب بيعها تحديد الجمهور المنسوب لكل إعلان: ست فترات لا تعني تلقائياً ستة أضعاف المشاهدين.</p><div class="di-ad-slots" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div></article></div>
+ <div class="di-ad-calculator"><div><h4>ماذا لو تغيّر الجمهور أو السعر؟</h4><p>سيناريو DOOH تعليمي. القيم الأولية مأخوذة من البحث، الصفحات 93–95؛ ويبقى الجمهور افتراضاً مستقلاً عن الخريطة.</p>
+ <form id="adForm" novalidate><fieldset><legend>إلى ماذا يشير الجمهور المُدخل؟</legend><label class="di-ad-radio"><input type="radio" name="basis" value="screen" checked>الشاشة كاملة، موزعاً على الفترات</label><label class="di-ad-radio"><input type="radio" name="basis" value="slot">كل فترة — تفسير حساب البحث</label></fieldset><p id="adBasisNote">توزيع توضيحي متساوٍ: تتقاسم الفترات جمهوراً إجمالياً ثابتاً. زيادة الفترات لا تضاعف هذا الجمهور.</p><div class="di-ad-inputs"><label for="ad-impressions">مرات الظهور المفترضة شهرياً<input id="ad-impressions" name="impressions" type="number" min="0" max="100000000" step="any" value="300000" required dir="ltr"></label><label for="ad-cpm">سعر CPM (درهم لكل ألف ظهور)<input id="ad-cpm" name="cpm" type="number" min="0" max="10000" step="any" value="55" required dir="ltr"></label><label for="ad-fill">معدل بيع الفترات (%)<input id="ad-fill" name="fill" type="number" min="0" max="100" step="any" value="70" required dir="ltr"></label><label for="ad-slots">فترات متساوية المدة<input id="ad-slots" name="slots" type="number" min="1" max="12" step="1" value="6" required dir="ltr"></label><label for="ad-opex">تكاليف التشغيل السنوية (درهم)<input id="ad-opex" name="opex" type="number" min="0" max="100000000" step="any" value="300167" required dir="ltr"></label><label for="ad-capex">الاستثمار الأولي (درهم)<input id="ad-capex" name="capex" type="number" min="0" max="100000000" step="any" value="150000" required dir="ltr"></label></div><button type="reset" class="di-map-option">استعادة الافتراضات الأولية</button><p id="adError" role="alert" hidden></p></form></div>
+ <div class="di-ad-results" aria-live="polite" aria-atomic="true"><p id="adPerSlot"></p><dl><div><dt>الإيرادات السنوية المقدّرة</dt><dd id="ad-result-annual">—</dd></div><div><dt>الرصيد السنوي بعد التشغيل</dt><dd id="ad-result-operating">—</dd></div><div><dt>رصيد خمس سنوات بعد خصم الاستثمار</dt><dd id="ad-result-fiveYear">—</dd></div><div><dt>مرات الظهور الشهرية لتغطية التشغيل</dt><dd id="ad-result-breakEven">—</dd></div></dl><p id="adVerdict"></p><p class="di-ad-equation">الإيراد = مرات الظهور ÷ 1,000 × CPM × معدل البيع × 12<span id="adMultiplier" hidden> × عدد الفترات، فقط عندما يكون الجمهور لكل فترة</span></p><p class="di-data-note">حساب مبسط بافتراضات ثابتة، دون خصم التدفقات أو التمويل أو ضرائب إضافية. هذا الرصيد ليس صافي ربح محاسبياً ولا عائداً فعلياً.</p></div></div>
+ <details class="di-ad-sources"><summary>المصادر وخيارات الحساب</summary><p>يوفر الجدول 27 في الصفحة 93 التكاليف، وتوفر الصفحتان 94–95 افتراضات الإيرادات. يصل البحث إلى 831,600 درهم سنوياً باستخدام 300,000 ظهور شهري × 6 فترات، وCPM قدره 55 درهماً ومعدل بيع 70%. لا يحدد أساس الجمهور بوضوح: وضع الجمهور لكل فترة يعيد إنتاج النتيجة، بينما يوزع وضع الشاشة المجموع مرة واحدة. لا يستخدم هذا الحساب بدائل التكاليف أو تناقضات العائد على الاستثمار الواردة لاحقاً في البحث.</p><p>اللوحات بمقاس 4 × 3 م ومواقعها توضيحية لشرح المنهج. ليست لوحات محصورة ميدانياً ولا مواقع مرخصة أو موصى بها. المقاطع لا تمثل الرؤية الفعلية. يبقى السيناريو المالي ثابتاً بين المناطق ما لم تُعدّل افتراضاته.</p><div><a href="pfe-ooh-dooh-casablanca.pdf#page=36" target="_blank" rel="noopener">المرور: منهج SUMO، الصفحات 36–38</a><a href="pfe-ooh-dooh-casablanca.pdf#page=93" target="_blank" rel="noopener">التكاليف: الجدول 27، الصفحة 93</a><a href="pfe-ooh-dooh-casablanca.pdf#page=94" target="_blank" rel="noopener">الجمهور وCPM والإيرادات، الصفحات 94–95</a></div></details>
+ <p class="di-ad-lesson">القيمة المضافة: ربط تحليل المرور بقرار اقتصادي قابل للاختبار، ثم تحديد البيانات الميدانية الناقصة قبل الاستثمار.</p></section>
       <article class="di-case-card" id="ooh-dooh">
        <span class="di-case-index">
         03 / تقييم الاستثمار

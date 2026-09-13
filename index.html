@@ -582,6 +582,7 @@
           Scenario playback
          </li>
         </ul>
+        <div class="di-ad-intro"><p>Watch the cars, then select billboard A or B to understand its revenue model.</p><button id="adStart" type="button" class="di-map-option">See the billboards on the road →</button></div>
         <div aria-label="Map controls" class="di-map-panel">
          <span class="di-map-control-label">
           Analysis layer
@@ -650,7 +651,7 @@
          </div>
         </div>
         <p class="di-data-note">
-         Archived SUMO output from the OOH/DOOH study. Vehicle positions are sampled every 8 seconds, with up to 450 vehicles per exported frame. Repeated positions are not unique viewers or measured advertising impressions.
+         Playback from the original one-second SUMO recordings and lane network. All recorded vehicles are retained. This is simulated traffic, not observed road traffic or measured advertising impressions.
         </p>
         <details class="di-map-method">
          <summary>
@@ -660,17 +661,17 @@
           The heat layer uses all 12,000 supplied coordinate/weight samples for the selected zone. The export does not document the weight formula. Colour indicates smoothed weighted sample concentration, not a calibrated congestion rate or an investment score.
          </p>
          <p>
-          Vehicle playback uses the supplied IDs, coordinates, timestamps and speeds without invented routes. Stationary vehicles remain stationary. The mean speed is recalculated for the displayed frame; it is not the original full-run average.
+          The replay follows the original lane shapes and junction connections between one-second observations. Recorded positions, IDs, stops and speeds are retained. A vehicle keeps the same body colour; colour does not indicate speed. The 3D car model is illustrative. Between-sample lane changes and steering remain a reconstruction, not a new SUMO run.
          </p>
          <p>
-          Traffic is one input to the thesis, alongside audience, CAPEX/OPEX and regulation. The archive does not contain detector coordinates, billboard visibility geometry or the original SUMO network and route files, so this map cannot calculate advertising exposure or reproduce the complete simulation.
+          The original network, route files and FCD recordings were recovered from the study files. This view replays the archived simulation; it does not rerun the traffic model. Billboard visibility geometry and audience measurements are not provided, so it cannot calculate advertising exposure.
          </p>
          <a download="" href="maarif_heatmap.json" id="mapSourceHeat">
           Download heat samples
          </a>
          <br/>
-         <a download="" href="maarif_simulation_geo.json" id="mapSourceSimulation">
-          Download vehicle records
+         <a download="" href="maarif_traffic.json" id="mapSourceSimulation">
+          Download replay manifest and source references
          </a>
         </details>
         <a class="di-text-link" href="pfe-ooh-dooh-casablanca.pdf#page=36" rel="noopener" target="_blank">
@@ -709,10 +710,10 @@
            Speed
           </span>
           <select aria-label="Playback speed" dir="ltr" id="mapPlaybackSpeed">
-           <option value="1">
+           <option selected="" value="1">
             1×
            </option>
-           <option selected="" value="5">
+           <option value="5">
             5×
            </option>
            <option value="10">
@@ -735,6 +736,8 @@
           </span>
          </div>
          <div aria-label="Map perspective" class="di-map-view">
+          <button id="mapStreet" type="button">Street view</button>
+          <button id="mapOverview" type="button">Whole zone</button>
           <button aria-pressed="false" data-map-view="2d" type="button">
            2D
           </button>
@@ -745,7 +748,13 @@
         </div>
         <div aria-describedby="mapHelp" aria-label="Interactive SUMO map of Casablanca" dir="ltr" id="case-map" role="region">
         </div>
-        <div aria-live="polite" class="di-map-status" id="mapStatus">
+        <aside class="di-ad-scene" id="adScene" hidden aria-label="Teaching billboards · illustrative locations">
+ <strong class="di-ad-scene__label">Teaching billboards · illustrative locations</strong>
+ <div class="di-ad-tabs"><button type="button" data-ad-site="A" aria-pressed="true">A · Static OOH</button><button type="button" data-ad-site="B" aria-pressed="false">B · Digital DOOH</button></div>
+ <p id="adSiteDescription">One poster, one advertiser: the site is rented by the month.</p><p id="adTraffic"></p>
+ <a href="#advertising-value" id="adExplain">Understand CPM and revenue ↓</a>
+ </aside>
+         <div aria-live="polite" class="di-map-status" id="mapStatus">
          Map not loaded. Choose a layer or enable JavaScript to explore; source files remain available.
         </div>
         <div aria-label="Map legend" class="di-map-legend">
@@ -822,6 +831,15 @@
         </div>
        </details>
       </article>
+      <section id="advertising-value" class="di-ad-study" aria-labelledby="adTitle">
+ <header><p class="di-kicker">FROM TRAFFIC TO A DECISION</p><h3 id="adTitle">Why simulate cars to choose a billboard?</h3><p>Traffic helps compare site conditions: vehicle movements, direction and slowdowns. The investment decision then weighs estimated advertising audience against selling prices and costs.</p></header>
+ <ol class="di-ad-steps"><li><span aria-hidden="true">01</span><h4>Observe traffic</h4><p>SUMO provides vehicles, trajectories and speeds. The selected road segment makes these conditions readable locally.</p></li><li><span aria-hidden="true">02</span><h4>Estimate audience</h4><p>Panel orientation, obstructions, visibility, occupants and display duration still need checking. One car is not one advertising impression.</p></li><li><span aria-hidden="true">03</span><h4>Sell advertising</h4><p>CPM is the price per 1,000 advertising impressions. At a CPM of MAD 55, 10,000 billable impressions represent MAD 550 in revenue.</p></li><li><span aria-hidden="true">04</span><h4>Test profitability</h4><p>High revenue is not enough: rent, energy, maintenance and the initial investment must also be covered.</p></li></ol>
+ <h4>Two formats, two ways to sell</h4><div class="di-ad-formats"><article><span class="di-ad-tag">A · Static OOH</span><p>The poster stays up throughout the campaign. The thesis scenario uses MAD 22,500 per month and 90% occupancy: MAD 243,000 annual revenue. After MAD 258,743 in annual costs, the balance is −MAD 15,743.</p></article><article><span class="di-ad-tag di-ad-tag--digital">B · Digital DOOH</span><p>The screen shares its loop between advertisers. The thesis assumes six ten-second slots. Selling them requires an audience attributable to each ad: six slots do not automatically deliver six times the viewers.</p><div class="di-ad-slots" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span></div></article></div>
+ <div class="di-ad-calculator"><div><h4>What if audience or price changed?</h4><p>Illustrative DOOH scenario. Starting values come from thesis pp. 93–95; audience remains an assumption independent of the map.</p>
+ <form id="adForm" novalidate><fieldset><legend>What does the audience input refer to?</legend><label class="di-ad-radio"><input type="radio" name="basis" value="screen" checked>The entire screen, shared across slots</label><label class="di-ad-radio"><input type="radio" name="basis" value="slot">Each slot — interpretation of the thesis calculation</label></fieldset><p id="adBasisNote">Illustrative equal allocation: slots share a fixed total audience. Adding slots does not multiply that audience.</p><div class="di-ad-inputs"><label for="ad-impressions">Assumed impressions / month<input id="ad-impressions" name="impressions" type="number" min="0" max="100000000" step="any" value="300000" required dir="ltr"></label><label for="ad-cpm">Selling CPM (MAD / 1,000 impressions)<input id="ad-cpm" name="cpm" type="number" min="0" max="10000" step="any" value="55" required dir="ltr"></label><label for="ad-fill">Commercial fill rate (%)<input id="ad-fill" name="fill" type="number" min="0" max="100" step="any" value="70" required dir="ltr"></label><label for="ad-slots">Equal-duration slots<input id="ad-slots" name="slots" type="number" min="1" max="12" step="1" value="6" required dir="ltr"></label><label for="ad-opex">Operating costs / year (MAD)<input id="ad-opex" name="opex" type="number" min="0" max="100000000" step="any" value="300167" required dir="ltr"></label><label for="ad-capex">Initial investment (MAD)<input id="ad-capex" name="capex" type="number" min="0" max="100000000" step="any" value="150000" required dir="ltr"></label></div><button type="reset" class="di-map-option">Reset starting assumptions</button><p id="adError" role="alert" hidden></p></form></div>
+ <div class="di-ad-results" aria-live="polite" aria-atomic="true"><p id="adPerSlot"></p><dl><div><dt>Estimated annual revenue</dt><dd id="ad-result-annual">—</dd></div><div><dt>Annual balance after operating costs</dt><dd id="ad-result-operating">—</dd></div><div><dt>Five-year balance, initial investment deducted</dt><dd id="ad-result-fiveYear">—</dd></div><div><dt>Monthly impressions to cover operating costs</dt><dd id="ad-result-breakEven">—</dd></div></dl><p id="adVerdict"></p><p class="di-ad-equation">Revenue = impressions ÷ 1,000 × CPM × fill rate × 12<span id="adMultiplier" hidden> × number of slots, only for an audience per slot</span></p><p class="di-data-note">Simplified calculation with constant assumptions, without discounting, financing or additional taxation. This balance is neither accounting net profit nor an observed return.</p></div></div>
+ <details class="di-ad-sources"><summary>Sources and calculation choices</summary><p>Table 27 (p. 93) provides costs; pp. 94–95 provide revenue assumptions. The thesis obtains MAD 831,600/year from 300,000 monthly impressions × 6 slots, a CPM of MAD 55 and 70% fill. Its audience basis is not explicit: per-slot mode reproduces that result, while screen mode allocates the total only once. Alternative cost bases and ROI inconsistencies later in the thesis are not carried into this calculation.</p><p>The 4 × 3 m billboards and locations illustrate the method. They are not surveyed panels or authorised or recommended sites. Road segments do not model actual visibility. The financial scenario stays the same across zones unless its assumptions are edited.</p><div><a href="pfe-ooh-dooh-casablanca.pdf#page=36" target="_blank" rel="noopener">Traffic: SUMO method, pp. 36–38</a><a href="pfe-ooh-dooh-casablanca.pdf#page=93" target="_blank" rel="noopener">Costs: table 27, p. 93</a><a href="pfe-ooh-dooh-casablanca.pdf#page=94" target="_blank" rel="noopener">Audience, CPM and revenue, pp. 94–95</a></div></details>
+ <p class="di-ad-lesson">The value: connect traffic analysis to a testable economic decision, then identify the missing field data before investing.</p></section>
       <article class="di-case-card" id="ooh-dooh">
        <span class="di-case-index">
         03 / Investment appraisal
