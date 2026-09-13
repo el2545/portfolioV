@@ -277,7 +277,7 @@ pre {
   aspect-ratio: 4/5;
   object-fit: cover;
   object-position: 50% 18%;
-  filter: grayscale(1);
+  filter: none;
 }
 .di-portrait__caption {
   padding: 12px 16px;

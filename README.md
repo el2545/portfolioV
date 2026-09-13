@@ -112,6 +112,16 @@ The reader uses the [official PDF.js document and canvas APIs](https://mozilla.g
 
 Validation: Chrome at 1440, 768, 390 and 320 px rendered all three CVs, the AI-MCDM report and the 154-page PFE. Checks cover no PDF library/document requests before opening, no forced download or new tab, page 36 deep links, page entry/bounds, previous/next, zoom, extracted text, original download identity, Escape focus return, loading errors, Retry, rapid close/reopen and native links without JavaScript. The existing SUMO workshop browser regression and Node arithmetic/cache checks pass. PDFs, simulation data and existing rendering/calculation code remain byte-for-byte unchanged from v6. No public deployment, Safari/Firefox, physical-device or screen-reader validation was performed.
 
+## v8 — published PDF repair and clearer project copy
+
+The public site is https://el2545.github.io/portfolio_UAE/. Its PDF reader failed because the library, worker, fonts and decoder resources were missing from the deployed repository (HTTP 404); the three original CV PDFs were present and valid. Commit `ec774801ea13470d27730549a94aa5bfbeb6faff` restored the 29 missing runtime and licence files. Canonical, social, structured-data and sitemap URLs now use the verified public repository path.
+
+If PDF rendering fails, each of the three CVs can display a local PNG preview rendered from the unchanged original PDF. This fallback supports zoom and keeps Retry, Open original and Download available. A failed dynamic import is retried with a fresh URL so a cached import failure does not prevent recovery. Longer reports retain the reader's explicit error and original-document link. The fallback image is a visual copy, not an accessible replacement for the original document or the working reader's extracted-text view.
+
+The introduction, project summaries, context labels and contact copy use concise descriptions of the supplied work in all three languages. The portrait uses its original colours. Research titles, qualifications, numerical results, assumptions and simulation sources are preserved.
+
+Validation: the reader and workshop browser regressions pass in Chrome across French desktop, English tablet and Arabic/French mobile viewports. Forced PDF-module failures, all three fallback previews and recovery through Retry pass. The three Node suites pass. Public Chrome checks confirm the three CVs render and the PFE opens at its cited page. PDF.js emits font-hint warnings for supplied documents; these did not prevent the checked pages from rendering. Physical devices, Safari, Firefox and screen-reader validation have not been performed. No package/build, lint, typecheck or formatter task is configured.
+
 ## Serving the replay
 
 Serve through HTTP or GitHub Pages, not by double-clicking HTML. Upload all files at the repository root, including every traffic chunk, the five road networks, `road-motion.js`, `traffic-3d.js`, and `three.module.min.js`. There is no package installation or build step for deployment. Traffic chunks are plain JSON for browser compatibility; the release omits redundant compressed copies of these chunks. Individual files remain below 25 MB. Large uploads can be split into batches. Basemap tiles still require internet access.

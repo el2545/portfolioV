@@ -634,7 +634,8 @@
     "textNote": "Texte extrait du PDF ; l’ordre de lecture peut différer de la mise en page.",
     "empty": "Aucun texte extractible sur cette page.",
     "invalid": "Saisissez un numéro de page valide.",
-    "pageImage": "Page {page} du document"
+    "pageImage": "Page {page} du document",
+    "fallback": "Aperçu du CV. Le lecteur PDF est indisponible ; vous pouvez lire cette copie visuelle ou ouvrir le document original."
   },
   "en": {
     "title": "Document reader",
@@ -658,7 +659,8 @@
     "textNote": "Text extracted from the PDF; reading order may differ from the page layout.",
     "empty": "No extractable text on this page.",
     "invalid": "Enter a valid page number.",
-    "pageImage": "Document page {page}"
+    "pageImage": "Document page {page}",
+    "fallback": "CV preview. The PDF reader is unavailable; you can read this visual copy or open the original document."
   },
   "ar": {
     "title": "قارئ المستندات",
@@ -682,7 +684,8 @@
     "textNote": "نص مستخرج من ملف PDF؛ قد يختلف ترتيب القراءة عن تخطيط الصفحة.",
     "empty": "لا يوجد نص قابل للاستخراج في هذه الصفحة.",
     "invalid": "أدخل رقم صفحة صالحاً.",
-    "pageImage": "الصفحة {page} من المستند"
+    "pageImage": "الصفحة {page} من المستند",
+    "fallback": "معاينة السيرة الذاتية. قارئ PDF غير متاح؛ يمكنك قراءة هذه النسخة المرئية أو فتح المستند الأصلي."
   }
 };
 
