@@ -1,8 +1,9 @@
+import { paintColours } from "./road-motion.js";
 // Shared car artwork and sampled-position playback for both map engines.
 export const carClass = (speed) => speed < 3 ? 'slow' : speed < 8 ? 'medium' : 'fast';
 
 export function createCarSprites() {
-  return Object.fromEntries(Object.entries({slow: '#e57858', medium: '#edc46d', fast: '#7ecddd'}).map(([key, colour]) => {
+  return Object.fromEntries(Object.entries(paintColours).map(([key, colour]) => {
     const canvas = document.createElement('canvas');
     canvas.width = 48;
     canvas.height = 88;
